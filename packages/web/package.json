@@ -1,8 +1,6 @@
 {
-  "name": "my-react-app",
-  "private": true,
+  "name": "bloom-reader-lite-web",
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
