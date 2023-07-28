@@ -4,25 +4,31 @@
         "slug": "bloom-reader-lite-mobile",
         "version": "1.0.0",
         "orientation": "portrait",
-        "icon": "./assets/icon.png",
+        "icon": "./assets/BloomIcon.png",
         "userInterfaceStyle": "light",
         "splash": {
-            "image": "./assets/bloom-reader-against-dark.png", // TODO: This is too wide
+            "image": "./assets/BloomIcon.png",
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "org.sil.bloomreaderlite"
         },
         "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            }
+            // "adaptiveIcon": {
+            //     "foregroundImage": "./assets/adaptive-icon.png",
+            //     "backgroundColor": "#ffffff"
+            // }
         },
         "web": {
             "favicon": "./assets/favicon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "1fb41809-af21-48d4-9a9b-f39d83c209f1"
+            }
         }
     }
 }
