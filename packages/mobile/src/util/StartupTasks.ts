@@ -18,6 +18,8 @@ async function loadWebBundleAsync() {
     });
     await ensureFolderAsync(Locations.WebDistFolder);
     const copyPromises = webBundleAssets.map((asset) => {
+        // Precondition: Right now we assume that the web bundle generates all its files in a single flat folder
+        // (That is, no subfolders). This assumption simplifies the code here.
         const extension = asset.type === "jsAsset" ? "js" : asset.type;
         const destination = `${Locations.WebDistFolder}/${asset.name}.${extension}`;
         console.log({ destination });
