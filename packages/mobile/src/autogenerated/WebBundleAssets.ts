@@ -2,8 +2,8 @@
 import { Asset } from "expo-asset";
 
 export const webBundleAssets = [
-	Asset.fromModule(require("../../assets/web-dist/index-3aaa3373.jsAsset")),
 	Asset.fromModule(require("../../assets/web-dist/index-d526a0c5.css")),
+	Asset.fromModule(require("../../assets/web-dist/index-fcc6687f.jsAsset")),
 	Asset.fromModule(require("../../assets/web-dist/index.html")),
 	Asset.fromModule(require("../../assets/web-dist/react-35ef61ed.svg")),
 	Asset.fromModule(require("../../assets/web-dist/vite.svg")),
