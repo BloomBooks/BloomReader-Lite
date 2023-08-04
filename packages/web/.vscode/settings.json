@@ -1,0 +1,18 @@
+{
+    "search.exclude": {
+        "**/node_modules": true,
+        "*.map": true
+    },
+    // Controls if the editor will insert spaces for tabs. Accepted values:  "auto", true, false. If set to "auto", the value will be guessed when a file is opened.
+    "editor.detectIndentation": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#ffffff", // Temporarily, "White" for "Web".  You can change this color if you think it's too atrocious.
+        "statusBar.debuggingBackground": "#ffffff",
+        "statusBar.noFolderBackground": "#ffffff",
+        "statussBar.prominentBackground": "#ffffff"
+    },
+    "cSpell.words": ["bloomplayer", "Ionicons"]
+}
