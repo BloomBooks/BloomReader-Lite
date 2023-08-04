@@ -8,4 +8,7 @@ export default defineConfig({
     build: {
         assetsDir: "./", // Simpler to generate a flat structure rather than one with subfolders.
     },
+    server: {
+        open: "/?booksUrlRoot=..%2Fmock-data%2FBooks", // That is, ../mock-data/Books
+    },
 });
