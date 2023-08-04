@@ -6,9 +6,12 @@
         "build": "tsc && vite build && yarn copy-dist",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
-        "copy-dist": "ts-node --esm scripts/copyWebDist.mts"
+        "copy-dist": "ts-node --esm scripts/copyWebDist.mts",
+        "postinstallComments": "// Runs automatically after running 'yarn' or 'yarn install'",
+        "postinstall": "ts-node --esm ./scripts/postinstall.mts"
     },
     "dependencies": {
+        "bloom-player": "^2.1.28",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },

@@ -2,8 +2,6 @@
  * This script should be run from the root of where you run "yarn" from.
  */
 
-// // Disable no-var-requires because this is a script, not a module, and import requires being in a module
-// /* eslint-disable @typescript-eslint/no-var-requires */
 import fs from "fs";
 import { unlink } from "fs/promises";
 import path from "path";
@@ -44,9 +42,9 @@ sourceFilesToCopy.forEach((filePath) => {
         : extension;
 
     const basename = path.basename(filePath, extension);
-    const toFilename = path
-        .join(path.dirname(relativeFilePath), basename + newExtension)
-        .replace(/\\/g, "/");
+    const toFilename = normalizeSeparators(
+        path.join(path.dirname(relativeFilePath), basename + newExtension)
+    );
 
     // Note: Each asset should have a unique basename (case insensitive).
     // Otherwise, when you do a cloud build in Expo, gradle will error out complaining about duplicate assets.
@@ -141,7 +139,7 @@ async function cleanupOutdatedFilesAsync() {
 
     // Relative paths
     const destRelativeFilePaths = destFilePaths.map((filePath) =>
-        path.relative(destinationFolderPath, filePath)
+        normalizeSeparators(path.relative(destinationFolderPath, filePath))
     );
     const relativePathsToDelete = destRelativeFilePaths.filter(
         (filePath) => !activeFilenameSet.has(filePath)
@@ -180,4 +178,7 @@ function copyFileSafe(
     }
     mkdirSafe(path.dirname(dest));
     fs.copyFileSync(src, dest);
+}
+function normalizeSeparators(path: string) {
+    return path.replace(/\\/g, "/");
 }
