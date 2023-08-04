@@ -5,6 +5,7 @@
 // // Disable no-var-requires because this is a script, not a module, and import requires being in a module
 // /* eslint-disable @typescript-eslint/no-var-requires */
 import fs from "fs";
+import { unlink } from "fs/promises";
 import path from "path";
 
 const logPrefix = "[copyWebDist.js]";
@@ -23,7 +24,7 @@ const sourceFilesToCopy = sourceFiles.filter(
     (filename) => !filesToNotCopy.includes(filename)
 );
 
-rmSafe(destinationFolderPath); // Clear out any outdated contents
+// rmSafe(destinationFolderPath); // Clear out any outdated contents
 // mkdirSafe(destinationFolderPath);
 
 const assetBasenames = new Map();
@@ -126,11 +127,46 @@ ${assetFilenames
 }
 exportAssets();
 
-function rmSafe(path: fs.PathLike) {
-    if (fs.existsSync(path)) {
-        fs.rmSync(path, { recursive: true });
+async function cleanupOutdatedFilesAsync() {
+    // Note: It would be safer to just delete this whole directory at the beginning,
+    // but that messes up Expo's hot reload, so that's why we manually delete these.
+
+    const activeFilenames = Array.from(assetBasenames.values()).map(
+        (fileInfo) => fileInfo.toFilename
+    );
+    const activeFilenameSet = new Set(activeFilenames);
+
+    // Absolute paths
+    const destFilePaths = getAllFilePaths(destinationFolderPath);
+
+    // Relative paths
+    const destRelativeFilePaths = destFilePaths.map((filePath) =>
+        path.relative(destinationFolderPath, filePath)
+    );
+    const relativePathsToDelete = destRelativeFilePaths.filter(
+        (filePath) => !activeFilenameSet.has(filePath)
+    );
+
+    const absolutePathsToDelete = relativePathsToDelete.map((relativePath) =>
+        path.join(destinationFolderPath, relativePath)
+    );
+    if (absolutePathsToDelete.length === 0) {
+        return;
     }
+
+    console.info(`${logPrefix} Deleting outdated files`);
+    console.info(absolutePathsToDelete);
+    const deletePromises = absolutePathsToDelete.map((path) => unlink(path));
+    await Promise.all(deletePromises);
+    console.info(`${logPrefix} Delete successful`);
 }
+await cleanupOutdatedFilesAsync();
+
+// function rmSafe(path: fs.PathLike) {
+//     if (fs.existsSync(path)) {
+//         fs.rmSync(path, { recursive: true });
+//     }
+// }
 function mkdirSafe(path: fs.PathLike) {
     if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true });
 }

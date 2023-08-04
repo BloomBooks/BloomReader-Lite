@@ -29,6 +29,7 @@ export default function App() {
         },
     });
 
+    // componentDidMount effects
     useEffect(() => {
         async function prepare() {
             try {
@@ -44,6 +45,18 @@ export default function App() {
         }
 
         prepare();
+
+        // Cleanup on unmount
+        return () => {
+            // You might think this is unnecessary, because "Why would the top-level component unmount?"
+            // It's here because of Expo's hot reload, which when it reloads will cause this component to be re-mounted.
+            // "Ok, but shouldn't the state be re-initialized?"
+            // Ah, no, preserving the state for you is one of the features of Hot Reload,
+            // and it's normally helpful, but not for {appIsReady}. I wish it reset that state instead.
+            // To counteract Hot Reload preserving the state, we should explicitly reset appIsReady
+            // when the component unmounts.
+            setAppIsReady(false);
+        };
     }, []);
 
     const onLayoutRootView = useCallback(async () => {
