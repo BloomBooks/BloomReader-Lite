@@ -1,0 +1,20 @@
+{
+    "name": "bloom-reader-lite-shared-types",
+    "version": "0.0.0",
+    "license": "MIT",
+    "scripts": {
+        "build": "yarn clean && tsc",
+        "watch": "yarn clean && tsc --watch",
+        "clean": "rimraf dist"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "rimraf": "^5.0.1",
+        "typescript": "^5.0.2"
+    },
+    "packageManager": "yarn@1.22.19",
+    "volta": {
+        "node": "16.14.0",
+        "yarn": "1.22.19"
+    }
+}

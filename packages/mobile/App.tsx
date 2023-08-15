@@ -1,14 +1,9 @@
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
-    useWindowDimensions,
-} from "react-native";
-import { WebviewHost } from "./src/WebviewHost";
 import { useCallback, useEffect, useState } from "react";
+import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import { RootSiblingParent } from "react-native-root-siblings";
+import { WebviewHost } from "./src/WebviewHost";
 import startupTasks from "./src/util/StartupTasks";
 
 // Keep the splash screen visible while we fetch resources
@@ -75,10 +70,11 @@ export default function App() {
     }
 
     return (
-        <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
-            {/* <Text>Open up App.tsx to start working on your app!</Text> */}
-            <WebviewHost />
-            <StatusBar style="auto" />
-        </SafeAreaView>
+        <RootSiblingParent>
+            <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+                <WebviewHost />
+                <StatusBar style="auto" />
+            </SafeAreaView>
+        </RootSiblingParent>
     );
 }

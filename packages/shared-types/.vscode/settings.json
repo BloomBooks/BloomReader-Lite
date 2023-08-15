@@ -12,10 +12,10 @@
     "editor.formatOnSave": true,
     "typescript.tsdk": "./node_modules/typescript/lib",
     "workbench.colorCustomizations": {
-        "statusBar.background": "#ffffff", // Temporarily, "White" for "Web".  You can change this color if you think it's too atrocious.
-        "statusBar.debuggingBackground": "#ffffff",
-        "statusBar.noFolderBackground": "#ffffff",
-        "statussBar.prominentBackground": "#ffffff"
+        "statusBar.background": "#008000", // arbitrarily picked bloom-green. Feel free to change this if you have a more methodical way you selected a color.
+        "statusBar.debuggingBackground": "#008000",
+        "statusBar.noFolderBackground": "#008000",
+        "statussBar.prominentBackground": "#008000"
     },
     "cSpell.words": ["bloomplayer", "Ionicons"]
 }

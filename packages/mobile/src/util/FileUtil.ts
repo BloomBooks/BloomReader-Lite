@@ -1,6 +1,5 @@
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
-import { Platform } from "react-native";
 import SingletonPromise from "./SingletonPromise";
 
 export function nameFromPath(path: string): string {
@@ -128,4 +127,26 @@ export async function ensureFolderAsync(folderPath: string) {
     return FileSystem.makeDirectoryAsync(folderPath, {
         intermediates: true,
     });
+}
+
+export async function listFilesInDirectory(folderPath: string) {
+    const fileList = await FileSystem.readDirectoryAsync(folderPath);
+    console.log("List of Files at", folderPath, ":", fileList);
+}
+
+/**
+ * Finds the first HTM file in the book
+ */
+export async function findHtmFileAsync(bookFolderPath: string) {
+    const directoryContents = await FileSystem.readDirectoryAsync(
+        `file://${bookFolderPath}`
+    );
+    const htmFiles = directoryContents.filter((filename) =>
+        filename.endsWith(".htm")
+    );
+    if (htmFiles.length === 0) {
+        throw new Error("Couldn't find any HTM files in book");
+    }
+    const htmFilename = htmFiles[0];
+    return htmFilename;
 }

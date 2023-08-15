@@ -1,18 +1,18 @@
 {
-  "search.exclude": {
-    "**/node_modules": true,
-    "*.map": true
-  },
-  // Controls if the editor will insert spaces for tabs. Accepted values:  "auto", true, false. If set to "auto", the value will be guessed when a file is opened.
-  "editor.detectIndentation": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "workbench.colorCustomizations": {
-    "statusBar.background": "#d65649",
-    "statusBar.debuggingBackground": "#d65649",
-    "statusBar.noFolderBackground": "#d65649",
-    "statussBar.prominentBackground": "#d65649"
-  },
-  "cSpell.words": ["bloomplayer", "Ionicons"]
+    "search.exclude": {
+        "**/node_modules": true,
+        "*.map": true
+    },
+    // Controls if the editor will insert spaces for tabs. Accepted values:  "auto", true, false. If set to "auto", the value will be guessed when a file is opened.
+    "editor.detectIndentation": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#008000", // arbitrarily picked bloom-green. Feel free to change this if you have a more methodical way you selected a color.
+        "statusBar.debuggingBackground": "#008000",
+        "statusBar.noFolderBackground": "#008000",
+        "statussBar.prominentBackground": "#008000"
+    },
+    "cSpell.words": ["bloomplayer", "Ionicons"]
 }

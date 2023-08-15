@@ -1,35 +1,62 @@
+import { MessageToBackend } from "@shared-types/toBackend/messages";
+import { MessageToFrontend } from "@shared-types/toFrontend/messages";
 import * as FileSystem from "expo-file-system";
 import * as Linking from "expo-linking";
 import * as React from "react";
-import { FunctionComponent } from "react";
-import { NativeSyntheticEvent, StyleSheet } from "react-native";
+import { FunctionComponent, useMemo, useRef } from "react";
+import { StyleSheet } from "react-native";
+import "react-native-url-polyfill/auto";
 import { WebView } from "react-native-webview";
+import { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes";
+import { Api } from "./api/api";
+import { handleMessageReceived } from "./api/handleMessageReceived";
 import { Locations } from "./constants/Locations";
-
-import * as ErrorLog from "./util/ErrorLog";
-import { WebViewMessage } from "react-native-webview/lib/WebViewTypes";
 import { createUrlSafely } from "./util/UrlUtil";
+import { WebviewUtil } from "./util/WebviewUtil";
 
 const WEB_BUNDLE_PATH = `${Locations.WebRootFolder}/index.html`;
 
 export const WebviewHost: FunctionComponent = (props) => {
-    const postMessageWorkaroundJavascript = `
-window.postMessage = function(data) {
-    window.ReactNativeWebView.postMessage(data);
-};`;
-
+    const webviewRef = useRef<WebView | null>(null);
     const uri = createUrlSafely(WEB_BUNDLE_PATH, {
         booksUrlRoot: Locations.BooksFolder,
     });
+
     console.info({ uri });
+
+    ////////////////////////////////////////////////////////
+    // Sending and receiving messages to/from the webview //
+    ////////////////////////////////////////////////////////
+    const apiHandler = useMemo(() => {
+        // useMemo because just one instance of Api per component instance is plenty
+        const handleReplyToFrontEnd = (message: MessageToFrontend) => {
+            if (!webviewRef.current) {
+                console.warn(
+                    "An attempt was made to send a message to the webview before it was ready."
+                );
+                return;
+            }
+
+            console.info("ReplyToFrontEnd", message);
+
+            const messageStr = JSON.stringify(message).replaceAll('"', '\\"');
+            webviewRef.current.injectJavaScript(`
+            window.bloomReaderLiteApi?.replyToFrontend("${messageStr}");
+                    `) + WebviewUtil.JavaScriptInjections.LastLineWorkaround;
+        };
+
+        return new Api(handleReplyToFrontEnd);
+    }, []);
 
     return (
         <WebView
+            ref={(ref) => (webviewRef.current = ref)}
             style={styles.webViewStyles}
             source={{ uri }}
             injectedJavaScript={
-                postMessageWorkaroundJavascript +
-                "\ntrue; // note: this is required, or you'll sometimes get silent failures"
+                WebviewUtil.JavaScriptInjections.PostMessageWorkaround +
+                WebviewUtil.JavaScriptInjections.PassConsoleLoggingToNative +
+                WebviewUtil.JavaScriptInjections.LastLineWorkaround
             }
             scalesPageToFit={true}
             automaticallyAdjustContentInsets={false}
@@ -49,21 +76,27 @@ window.postMessage = function(data) {
             //    (i.e. file:///var/mobile/Containers/Data/Application/{guid})
             //     didn't allow both cache and documents directory to be accessed, sadly.
             //     Only the cache directory was accessible (probably because that was the one the sourceUri was located in)
-            allowingReadAccessToURL={FileSystem.documentDirectory!}
+            allowingReadAccessToURL={FileSystem.cacheDirectory!}
             mediaPlaybackRequiresUserAction={false}
-            onMessage={onMessageReceived}
-            onShouldStartLoadWithRequest={({ url }) => {
-                // Goal: If a book has a normal hyperlink, it should open in the OS's browser, not the webview.
-                if (url.startsWith("http")) {
-                    Linking.openURL(url);
-                    console.info(
-                        "[WebviewHost] Load aborted, opening URL in default browser instead. URL: " +
-                            url
-                    );
-                    return false;
+            onMessage={(event) => {
+                if (!event.nativeEvent || !event.nativeEvent.data) {
+                    // At startup we get a completely spurious
+                    // message, the source of which I have not been able to track down.
+                    // However, since it doesn't have any data format we expect, we can easily ignore it.
+                    return;
                 }
-                return true;
+
+                // TODO: Should theoretically do real runtime validation of the events,
+                // not just "as ..."
+                // TODO: Should make sure that this event is only coming from our code and not something malicious.
+                //       Read https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage#security_concerns
+                const data = JSON.parse(
+                    event.nativeEvent.data
+                ) as MessageToBackend;
+
+                handleMessageReceived(data, apiHandler);
             }}
+            onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
             //
             // BloomReader-RN used these, but not sure if they're needed or not
             originWhitelist={["*"]} // Some widgets need this to load their content
@@ -80,76 +113,32 @@ const styles = StyleSheet.create({
     },
 });
 
-function onMessageReceived(event: NativeSyntheticEvent<WebViewMessage>) {
-    try {
-        if (!event.nativeEvent || !event.nativeEvent.data) {
-            // At startup we get a completely spurious
-            // message, the source of which I have not been able to track down.
-            // However, since it doesn't have any data format we expect, we can easily ignore it.
-            return;
-        }
+function onShouldStartLoadWithRequest(event: ShouldStartLoadRequest) {
+    const urlStr = event.url;
+    const url = new URL(urlStr);
 
-        const data = JSON.parse(event.nativeEvent.data);
-        switch (data.messageType) {
-            // case "sendAnalytics":
-            //     onAnalyticsEvent(data);
-            //     break;
-            case "logInfo":
-                console.info(data.message);
-                break;
-            case "logError":
-                ErrorLog.logError({
-                    logMessage: data.message,
-                });
-                break;
-            // case "requestCapabilities":
-            //     this.webview!.postMessage(
-            //         JSON.stringify({
-            //             messageType: "capabilities",
-            //             canGoBack: true,
-            //         })
-            //     );
-            //     break;
-            // case "backButtonClicked":
-            //     props.navigation.goBack();
-            //     break;
-            // case "bookStats":
-            //     onBookStats(data);
-            //     break;
-            // case "pageShown":
-            //     onPageShown(data);
-            //     break;
-            // case "audioPlayed":
-            //     onAudioPlayed(data);
-            //     break;
-            // case "videoPlayed":
-            //     onVideoPlayed(data);
-            //     break;
-            // default:
-            //     ErrorLog.logError({
-            //         logMessage:
-            //             "BookReader.onMessageReceived() does not understand the messageType on this event: " +
-            //             JSON.stringify(event, getStringifyReplacer()),
-            //     });
-        }
-
-        // Next step: should also handle message type storePageData. The data object will also
-        // have a key and a value, both strings. We need to store them somewhere that will
-        // (at least) survive rotating the phone, and ideally closing and re-opening the book;
-        // but it should NOT survive downloading a new version of the book. Whether there's some
-        // other way to get rid of it (for testing, or for a new reader) remains to be decided.
-        // Once the data is stored, it needs to become part of the reader startup to give it
-        // back to the reader using window.sendMessage(). BloomPlayer is listening for a message
-        // with messageType restorePageData and pageData an object whose fields are the key/value
-        // pairs passed to storePageData. See the event listener in boom-player's externalContext
-        // file.
-    } catch (e) {
-        // ErrorLog.logError({
-        //     logMessage:
-        //         "BookReader.onMessageReceived() does not understand this event: " +
-        //         event.nativeEvent.data,
-        // });
+    // Goal: If a book has a normal hyperlink (not file:///), it should open in the OS's browser, not the webview.
+    if (url.protocol !== "file:") {
+        Linking.openURL(event.url);
+        console.info(
+            "[WebviewHost] Load aborted, opening URL in default browser instead. URL: " +
+                url
+        );
+        return false;
     }
+    console.log("Loading url: " + url);
+    // if (url.pathname.endsWith("/bloom-player/bloomplayer.htm")) {
+    //     console.info(`Intercepting bloom-player request ${urlStr}`);
+    //     const bookUrlParam = url.searchParams.get("url");
+    //     if (!bookUrlParam) {
+    //         return true;
+    //     }
+    //     console.log(`pretending to extract book "${bookUrlParam}"`);
+    //     openBookForReading(bookUrlParam).then((value) => {
+    //         console.log("openBookForReading returned with: " + value);
+    //     });
+    // }
+    return true;
 }
 
 export default WebviewHost;
