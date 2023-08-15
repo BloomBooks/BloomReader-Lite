@@ -1,15 +1,11 @@
-import { UnpackZipFileMessage } from "@shared-types/toBackend/bloomReaderWeb";
+import { UnpackZipFileMessage } from "@shared-types/toBackend/bloomReaderWebMessages";
 import { ZipFileUnpackedMessage } from "@shared-types/toFrontend/messages";
 import { FunctionComponent, useCallback, useEffect } from "react";
-
-interface BookReaderProps {
-    bookUrl: string;
-}
 
 const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
 
 // TODO: This class needs to be renamed.
-export const BookReader: FunctionComponent<BookReaderProps> = () => {
+export const BookList: FunctionComponent = () => {
     const handleEvent = useCallback((data: ZipFileUnpackedMessage) => {
         // The query params that come after the "?" in a bloomPlayer URL
         const queryParams: Record<string, string> = {
@@ -55,6 +51,10 @@ export const BookReader: FunctionComponent<BookReaderProps> = () => {
             >
                 The Moon and the Cap
             </a>
+            <br />
+            <div>
+                <a href={"https://bloomlibrary.org"}>BLORG</a>
+            </div>
         </div>
     );
 };
