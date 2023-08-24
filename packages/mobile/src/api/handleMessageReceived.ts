@@ -14,6 +14,9 @@ export function handleMessageReceived(
             case "console-log":
                 api.consoleLog(data);
                 break;
+            case "get-book-collection":
+                api.getBookCollection();
+                break;
             case "unpack-zip-file":
                 api.unpackZipFile(data);
                 break;

@@ -10,9 +10,12 @@ export class FrontendApi {
      * Sends a message to the backend.
      */
     public send(obj: MessageToBackend) {
+        const message = JSON.stringify(obj);
+        console.log("Sending: " + message);
+
         // ENHANCE: Maybe the target should be more narrowly scoped rather than blasting "*"
         // Does it work to put window.location.origin here?
-        window.postMessage(JSON.stringify(obj), "*"); // any window may receive the message
+        window.postMessage(message, "*"); // any window may receive the message
     }
 
     /**

@@ -6,7 +6,7 @@ import {
 
 export interface IBloomReaderLiteApi extends IBloomPlayerApi {
     consoleLog(data: ConsoleLogMessage);
-
+    getBookCollection();
     unpackZipFile(data: UnpackZipFileMessage): Promise<void>;
 }
 

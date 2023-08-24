@@ -1,6 +1,15 @@
 // These represent the messages that the frontend is expecting to be notified about
 
-export type MessageToFrontend = ZipFileUnpackedMessage;
+import { BookCollection } from "../model/bookCollection";
+
+export type MessageToFrontend =
+    | BookCollectionChangedMessage
+    | ZipFileUnpackedMessage;
+
+export type BookCollectionChangedMessage = {
+    messageType: "book-collection-changed";
+    bookCollection: BookCollection;
+};
 
 /**
  * Message events indicating that the requested zip file at ${origZip} has finished unpacking and that its index HTM file is at ${indexPath}

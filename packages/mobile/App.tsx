@@ -1,9 +1,15 @@
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
+import WebView from "react-native-webview";
+import { BloomContext } from "./src/BloomContext";
 import { WebviewHost } from "./src/WebviewHost";
+import {
+    BookCollection,
+    emptyBookCollection,
+} from "./src/models/BookCollection";
 import startupTasks from "./src/util/StartupTasks";
 
 // Keep the splash screen visible while we fetch resources
@@ -11,6 +17,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
     const [appIsReady, setAppIsReady] = useState(false);
+    const [drawerLockMode, setDrawerLockMode] = useState<
+        "unlocked" | "locked-closed"
+    >("unlocked");
+    const [bookCollection, setBookCollection] = useState<BookCollection>(
+        emptyBookCollection()
+    );
+    const webviewRef = useRef<WebView>(null);
 
     // Besides height and width, the object also contains scale and fontsize,
     // should we ever have need of them.
@@ -71,10 +84,31 @@ export default function App() {
 
     return (
         <RootSiblingParent>
-            <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
-                <WebviewHost />
-                <StatusBar style="auto" />
-            </SafeAreaView>
+            <BloomContext.Provider
+                value={{
+                    bookCollection,
+                    setBookCollection: (newBookCollection: BookCollection) => {
+                        console.log(
+                            "Setting book collection: " +
+                                JSON.stringify(newBookCollection)
+                        );
+                        setBookCollection(newBookCollection);
+                    },
+                    drawerLockMode,
+                    setDrawerLockMode: (
+                        lockMode: "unlocked" | "locked-closed"
+                    ) => setDrawerLockMode(lockMode),
+                    activeWebviewRef: webviewRef,
+                }}
+            >
+                <SafeAreaView
+                    style={styles.container}
+                    onLayout={onLayoutRootView}
+                >
+                    <WebviewHost />
+                    <StatusBar style="auto" />
+                </SafeAreaView>
+            </BloomContext.Provider>
         </RootSiblingParent>
     );
 }

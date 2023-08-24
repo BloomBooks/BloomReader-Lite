@@ -1,0 +1,60 @@
+import { UnpackZipFileMessage } from "@shared-types/toBackend/bloomReaderWebMessages";
+import { ZipFileUnpackedMessage } from "@shared-types/toFrontend/messages";
+import { FunctionComponent, useCallback, useEffect } from "react";
+
+const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
+
+// TODO: This class needs to be renamed.
+export const BookListBackup: FunctionComponent = () => {
+    const handleEvent = useCallback((data: ZipFileUnpackedMessage) => {
+        // The query params that come after the "?" in a bloomPlayer URL
+        const queryParams: Record<string, string> = {
+            url: data.indexPath,
+            centerVertically: "true",
+            showBackButton: "true",
+            independent: "false",
+            host: "bloomreaderlite",
+        };
+        // Additional params that might possibly be useful, or might not
+        // &useOriginalPageSize=true&allowToggleAppBar=true&lang=en&hideFullScreenButton=false
+
+        const queryParamsString = Object.entries(queryParams)
+            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+            .join("&");
+
+        const readUri = `${BLOOM_PLAYER_PATH}?${queryParamsString}`;
+        console.log("Read uri: " + readUri);
+
+        window.location.href = readUri;
+    }, []);
+
+    useEffect(() => {
+        window.bloomReaderLiteApi.receive("zip-file-unpacked", handleEvent);
+    }, [handleEvent]);
+
+    // const theme = useTheme();
+
+    return (
+        <div>
+            <a
+                // ENHANCE: Putting a placeholder href might be nice?
+                onClick={(event) => {
+                    event.preventDefault(); // Prevent default navigation behavior
+
+                    const messageEvent: UnpackZipFileMessage = {
+                        messageType: "unpack-zip-file",
+                        zipFilePath:
+                            "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
+                    };
+                    window.bloomReaderLiteApi.send(messageEvent);
+                }}
+            >
+                The Moon and the Cap
+            </a>
+            <br />
+            <div>
+                <a href={"https://bloomlibrary.org"}>BLORG</a>
+            </div>
+        </div>
+    );
+};

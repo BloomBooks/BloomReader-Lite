@@ -1,20 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
-import { Locations } from "../constants/Locations";
 import Toast from "react-native-root-toast";
+import { Locations } from "../constants/Locations";
 import {
     Book,
     BookOrShelf,
     isShelf,
     recursiveListForShelf,
     Shelf,
-    //   isShelf,
-    //   recursiveListForShelf
 } from "../models/BookOrShelf";
 // //import { BookCollection } from "./BookCollection";
 import I18n from "../i18n/i18n";
-import * as BRAnalytics from "../util/BRAnalytics";
 import * as BookStorage from "../storage/BookStorage";
+import * as BRAnalytics from "../util/BRAnalytics";
 import { ensureFolderAsync, isBookFile, isShelfFile } from "../util/FileUtil";
 
 const KEY_PREFIX = "bloomreader.books.";
@@ -228,3 +226,40 @@ export async function initRootCollection() {
     );
     console.log("bookpaths: " + JSON.stringify(bookPaths));
 }
+
+// let subscribers: (() => void)[] = [];
+// function subscribeToCollectionChanges(callback: () => void) {
+//     subscribers.push(callback);
+// }
+
+// function unsubscribeToCollectionChanges(callback: () => void) {
+//     subscribers = subscribers.filter((x) => x !== callback);
+// }
+
+// import { useEffect, useState } from "react";
+
+// /**
+//  * A react-y wrapper around BookCollection.
+//  * If you use this, you should try to make sure that this is the only book collection used.
+//  */
+// export function useBookCollection() {
+//     const [bookCollection, setBookCollection] = useState<BookCollection>(
+//         emptyBookCollection()
+//     );
+
+//     // Initial load
+//     useEffect(() => {
+//         const loadCollectionAsync = async () => {
+//             setBookCollection(await getBookCollection());
+//         };
+
+//         loadCollectionAsync();
+//     }, []);
+
+//     useEffect(() => {
+//         // ENHANCE: You could enhance it not to write it back to storage if we just read it from async storage
+//         // (I think this would only be at initial loading time),
+//         // but I don't think it's a big deal to have that extraneous write in there.
+//         writeCollection(bookCollection);
+//     }, [bookCollection]);
+// }

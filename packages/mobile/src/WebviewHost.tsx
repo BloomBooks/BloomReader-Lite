@@ -1,52 +1,74 @@
 import { MessageToBackend } from "@shared-types/toBackend/messages";
-import { MessageToFrontend } from "@shared-types/toFrontend/messages";
 import * as FileSystem from "expo-file-system";
 import * as Linking from "expo-linking";
 import * as React from "react";
-import { FunctionComponent, useMemo, useRef } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import "react-native-url-polyfill/auto";
 import { WebView } from "react-native-webview";
 import { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes";
-import { Api } from "./api/api";
+import { BloomContext } from "./BloomContext";
+import { useApi } from "./api/api";
 import { handleMessageReceived } from "./api/handleMessageReceived";
 import { Locations } from "./constants/Locations";
+import { useReplyToFrontend } from "./hooks/useReplyToFrontend";
+import { syncCollectionAndFetch } from "./models/BookCollection";
 import { createUrlSafely } from "./util/UrlUtil";
 import { WebviewUtil } from "./util/WebviewUtil";
 
 const WEB_BUNDLE_PATH = `${Locations.WebRootFolder}/index.html`;
 
 export const WebviewHost: FunctionComponent = (props) => {
-    const webviewRef = useRef<WebView | null>(null);
+    const bloomContext = React.useContext(BloomContext);
+    const webviewRef = bloomContext.activeWebviewRef;
+
+    if (!webviewRef) {
+        throw new Error(
+            "activeWebviewRef should be initialized by BloomContext.provider"
+        );
+    }
+
     const uri = createUrlSafely(WEB_BUNDLE_PATH, {
         booksUrlRoot: Locations.BooksFolder,
     });
 
     console.info({ uri });
 
+    // on mount effects
+    useEffect(() => {
+        const loadAsync = async () => {
+            const updatedCollection = await syncCollectionAndFetch();
+            bloomContext.setBookCollection(updatedCollection);
+
+            // TODO: run checkForBooksToImport (see BloomReader-RN)
+        };
+
+        loadAsync();
+    }, []);
+
+    const handleReplyToFrontEnd = useReplyToFrontend();
+
     ////////////////////////////////////////////////////////
     // Sending and receiving messages to/from the webview //
     ////////////////////////////////////////////////////////
-    const apiHandler = useMemo(() => {
-        // useMemo because just one instance of Api per component instance is plenty
-        const handleReplyToFrontEnd = (message: MessageToFrontend) => {
-            if (!webviewRef.current) {
-                console.warn(
-                    "An attempt was made to send a message to the webview before it was ready."
-                );
-                return;
-            }
+    // const apiHandler = useMemo(() => {
+    //     // useMemo because just one instance of Api per component instance is plenty
 
-            console.info("ReplyToFrontEnd", message);
+    //     return new Api(bloomContext.bookCollection, handleReplyToFrontEnd);
+    // }, [handleReplyToFrontEnd]);
+    const apiHandler = useApi();
 
-            const messageStr = JSON.stringify(message).replaceAll('"', '\\"');
-            webviewRef.current.injectJavaScript(`
-            window.bloomReaderLiteApi?.replyToFrontend("${messageStr}");
-                    `) + WebviewUtil.JavaScriptInjections.LastLineWorkaround;
-        };
+    useEffect(() => {
+        // ENHANCE: How would we send this whenever the collection changes?
+        // Maybe we need to subscribe to changes, and maybe BookCollection needs to keep track of who's subscribing to it?
+        // Or maybe with a custom hook.
+        console.log("The collection changed... hopefully.");
 
-        return new Api(handleReplyToFrontEnd);
-    }, []);
+        handleReplyToFrontEnd({
+            messageType: "book-collection-changed",
+            bookCollection: bloomContext.bookCollection,
+        });
+    }, [bloomContext.bookCollection]);
 
     return (
         <WebView
