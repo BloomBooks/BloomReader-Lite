@@ -2,7 +2,8 @@
     "compilerOptions": {
         "declaration": true,
         "outDir": "dist",
-        "rootDir": "src"
+        "rootDir": "src",
+        "lib": ["DOM", "ESNext"] // Try to match the value in expo/tsconfig.base
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules"]

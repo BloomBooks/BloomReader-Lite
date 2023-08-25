@@ -1,25 +1,25 @@
-import * as FileSystem from "expo-file-system";
-import { unzip } from "react-native-zip-archive";
-import { Locations } from "../constants/Locations";
 import {
     Book,
     BookFeatures,
     BookOrShelf,
     isShelf,
     Shelf,
-} from "../models/BookOrShelf";
-// import { androidExternalStorageDirs } from "../native_modules/AndroidExternalStorageDirsModule";
+} from "@shared/models/BookOrShelf";
+import { nameFromPath } from "@shared/util/FileUtil";
+import * as FileSystem from "expo-file-system";
+import { Platform } from "react-native";
+import { unzip } from "react-native-zip-archive";
+import { Locations } from "../constants/Locations";
 import { castUnknownErrorToString, logError } from "../util/ErrorLog";
 import {
     ensureFolderAsync,
     extension,
-    nameFromPath,
     nameifyPath,
     readExternalBloomDir,
     safeUnlink,
 } from "../util/FileUtil";
 import { Path } from "../util/Path";
-import { Platform } from "react-native";
+// import { androidExternalStorageDirs } from "../native_modules/AndroidExternalStorageDirsModule";
 
 const PRIVATE_BOOKS_DIR = Locations.BooksFolder;
 const THUMBS_DIR = Locations.ThumbsFolder;

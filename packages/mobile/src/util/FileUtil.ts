@@ -2,10 +2,6 @@ import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
 import SingletonPromise from "./SingletonPromise";
 
-export function nameFromPath(path: string): string {
-    return path.slice(path.lastIndexOf("/") + 1);
-}
-
 /**
  * Deletes a directory or file
  * @remarks Based on rnfsSafeUnlink in BloomReader-RN

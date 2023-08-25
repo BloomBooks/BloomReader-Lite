@@ -1,16 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from "expo-file-system";
-import Toast from "react-native-root-toast";
-import { Locations } from "../constants/Locations";
 import {
     Book,
     BookOrShelf,
     isShelf,
     recursiveListForShelf,
     Shelf,
-} from "../models/BookOrShelf";
+} from "@shared/models/BookOrShelf";
+import * as FileSystem from "expo-file-system";
+import Toast from "react-native-root-toast";
+import { Locations } from "../constants/Locations";
 // //import { BookCollection } from "./BookCollection";
-import I18n from "../i18n/i18n";
+import I18n from "@shared/i18n/i18n";
 import * as BookStorage from "../storage/BookStorage";
 import * as BRAnalytics from "../util/BRAnalytics";
 import { ensureFolderAsync, isBookFile, isShelfFile } from "../util/FileUtil";
