@@ -29,6 +29,9 @@
             "eas": {
                 "projectId": "1fb41809-af21-48d4-9a9b-f39d83c209f1"
             }
+        },
+        "experiments": {
+            "tsconfigPaths": true
         }
     }
 }
