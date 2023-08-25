@@ -1,3 +1,7 @@
+import {
+    BookCollection,
+    emptyBookCollection,
+} from "@shared/models/BookCollection";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -6,10 +10,6 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import WebView from "react-native-webview";
 import { BloomContext } from "./src/BloomContext";
 import { WebviewHost } from "./src/WebviewHost";
-import {
-    BookCollection,
-    emptyBookCollection,
-} from "./src/models/BookCollection";
 import startupTasks from "./src/util/StartupTasks";
 
 // Keep the splash screen visible while we fetch resources

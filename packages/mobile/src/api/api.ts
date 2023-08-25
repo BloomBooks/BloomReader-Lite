@@ -1,4 +1,5 @@
 import { IBloomReaderLiteApi } from "@shared/api";
+import { BookCollection } from "@shared/models/BookCollection";
 import { LogErrorMessage } from "@shared/toBackend/bloomPlayerMessages";
 import {
     ConsoleLogMessage,
@@ -7,7 +8,6 @@ import {
 import { useContext } from "react";
 import { BloomContext } from "../BloomContext";
 import { useReplyToFrontend } from "../hooks/useReplyToFrontend";
-import { BookCollection } from "../models/BookCollection";
 import { safeOpenBookForReading } from "../storage/BookStorage";
 import * as ErrorLog from "../util/ErrorLog";
 import { findHtmFileAsync } from "../util/FileUtil";

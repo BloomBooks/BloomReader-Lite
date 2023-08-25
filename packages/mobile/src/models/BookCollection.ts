@@ -1,16 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import I18n from "@shared/i18n/i18n";
+import {
+    BookCollection,
+    BookCollectionWithNewBook,
+    emptyBookCollection,
+} from "@shared/models/BookCollection";
 import {
     Book,
     BookOrShelf,
+    Shelf,
     isShelf,
     recursiveListForShelf,
-    Shelf,
 } from "@shared/models/BookOrShelf";
 import * as FileSystem from "expo-file-system";
 import Toast from "react-native-root-toast";
 import { Locations } from "../constants/Locations";
-// //import { BookCollection } from "./BookCollection";
-import I18n from "@shared/i18n/i18n";
 import * as BookStorage from "../storage/BookStorage";
 import * as BRAnalytics from "../util/BRAnalytics";
 import { ensureFolderAsync, isBookFile, isShelfFile } from "../util/FileUtil";
@@ -19,22 +23,6 @@ const KEY_PREFIX = "bloomreader.books.";
 const BOOK_LIST_KEY = KEY_PREFIX + "books";
 const SHELF_LIST_KEY = KEY_PREFIX + "shelves";
 export const COLLECTION_FORMAT_VERSION = "4";
-
-export interface BookCollection {
-    books: Book[];
-    shelves: Shelf[];
-}
-
-export interface BookCollectionWithNewBook extends BookCollection {
-    newBook?: Book;
-}
-
-export function emptyBookCollection(): BookCollection {
-    return {
-        books: [],
-        shelves: [],
-    };
-}
 
 export async function syncCollectionAndFetch(): Promise<BookCollection> {
     let collection = await getBookCollection();

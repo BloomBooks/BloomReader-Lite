@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import {
+    BookCollection,
+    emptyBookCollection,
+} from "@shared/models/BookCollection";
 import React, { MutableRefObject } from "react";
 import WebView from "react-native-webview";
-import { BookCollection, emptyBookCollection } from "./models/BookCollection";
 
 export const BloomContext = React.createContext<{
     drawerLockMode: "unlocked" | "locked-closed";
