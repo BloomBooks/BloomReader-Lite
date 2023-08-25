@@ -22,7 +22,7 @@
 
         /* Shared Types */
         "paths": {
-            "@shared-types/*": ["../shared-types/dist/*"]
+            "@shared/*": ["../shared/dist/*"]
         }
     },
     "include": ["src"],

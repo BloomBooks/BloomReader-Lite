@@ -1,9 +1,9 @@
-import { IBloomReaderLiteApi } from "@shared-types/api";
-import { LogErrorMessage } from "@shared-types/toBackend/bloomPlayerMessages";
+import { IBloomReaderLiteApi } from "@shared/api";
+import { LogErrorMessage } from "@shared/toBackend/bloomPlayerMessages";
 import {
     ConsoleLogMessage,
     UnpackZipFileMessage,
-} from "@shared-types/toBackend/bloomReaderWebMessages";
+} from "@shared/toBackend/bloomReaderWebMessages";
 import { useContext } from "react";
 import { BloomContext } from "../BloomContext";
 import { useReplyToFrontend } from "../hooks/useReplyToFrontend";

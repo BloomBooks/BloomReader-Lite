@@ -1,4 +1,4 @@
-import { MessageToBackend } from "@shared-types/toBackend/messages";
+import { MessageToBackend } from "@shared/toBackend/messages";
 import * as FileSystem from "expo-file-system";
 import * as Linking from "expo-linking";
 import * as React from "react";

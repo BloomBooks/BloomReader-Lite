@@ -1,4 +1,4 @@
-import { MessageToFrontend } from "@shared-types/toFrontend/messages";
+import { MessageToFrontend } from "@shared/toFrontend/messages";
 import { useCallback, useContext } from "react";
 import { BloomContext } from "../BloomContext";
 import { WebviewUtil } from "../util/WebviewUtil";

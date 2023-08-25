@@ -1,5 +1,5 @@
-import { MessageToBackend } from "@shared-types/toBackend/messages";
-import { MessageToFrontend } from "@shared-types/toFrontend/messages";
+import { MessageToBackend } from "@shared/toBackend/messages";
+import { MessageToFrontend } from "@shared/toFrontend/messages";
 
 type MessageType = MessageToFrontend["messageType"];
 type FrontendMessageListener = (data: MessageToFrontend) => void;

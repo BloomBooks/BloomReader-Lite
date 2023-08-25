@@ -3,7 +3,7 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
-            "@shared-types/*": ["../shared-types/dist/*"]
+            "@shared/*": ["../shared/dist/*"]
         }
     }
 }

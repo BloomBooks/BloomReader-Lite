@@ -1,6 +1,6 @@
 import { IonButton } from "@ionic/react";
-import { UnpackZipFileMessage } from "@shared-types/toBackend/bloomReaderWebMessages";
-import { MessageToFrontend } from "@shared-types/toFrontend/messages";
+import { UnpackZipFileMessage } from "@shared/toBackend/bloomReaderWebMessages";
+import { MessageToFrontend } from "@shared/toFrontend/messages";
 import { FunctionComponent, useCallback, useEffect } from "react";
 
 const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;

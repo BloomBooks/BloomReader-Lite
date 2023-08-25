@@ -1,5 +1,5 @@
-import { IBloomReaderLiteApi } from "@shared-types/api";
-import { MessageToBackend } from "@shared-types/toBackend/messages";
+import { IBloomReaderLiteApi } from "@shared/api";
+import { MessageToBackend } from "@shared/toBackend/messages";
 
 /**
  * Try to keep this function generic enough that if moved, it could be re-used for sending messages to

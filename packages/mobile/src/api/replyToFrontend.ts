@@ -1,3 +1,3 @@
-import { MessageToFrontend } from "@shared-types/toFrontend/messages";
+import { MessageToFrontend } from "@shared/toFrontend/messages";
 
 export type IReplyToFrontEnd = (message: MessageToFrontend) => void;
