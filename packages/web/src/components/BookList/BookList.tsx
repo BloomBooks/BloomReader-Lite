@@ -230,19 +230,6 @@ export const BookList: FunctionComponent = () => {
     // const list = ["Book Title 1"];
     const booksJsx = list.map((item) => {
         return (
-            // <IonButton
-            //     onClick={() => {
-            //         // TODO: Generate zipFilePath programmatically
-            //         const messageEvent: UnpackZipFileMessage = {
-            //             messageType: "unpack-zip-file",
-            //             zipFilePath:
-            //                 "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
-            //         };
-            //         window.bloomReaderLiteApi.send(messageEvent);
-            //     }}
-            // >
-            //     {listItem}
-            // </IonButton>
             <div
                 onClick={() => {
                     // TODO: Generate zipFilePath programmatically
