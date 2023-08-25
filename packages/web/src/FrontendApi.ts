@@ -1,5 +1,5 @@
-import { MessageToBackend } from "@shared/toBackend/messages";
-import { MessageToFrontend } from "@shared/toFrontend/messages";
+import { MessageToBackend } from "bloom-reader-lite-shared/dist/toBackend/messages";
+import { MessageToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/messages";
 
 type MessageType = MessageToFrontend["messageType"];
 type FrontendMessageListener = (data: MessageToFrontend) => void;

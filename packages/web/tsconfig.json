@@ -18,13 +18,17 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true,
+        "noFallthroughCasesInSwitch": true
 
-        /* Shared Types */
-        "paths": {
-            // "@shared/*": ["../shared/dist/*"]
-            "@shared/*": ["../shared/src/*"] // Or you could map it to dist, but mapping to src enables better VSCode GoToDefinition functionality, hopefully without any negative ramifications
-        }
+        // ENHANCE:
+        // I wish I could use "paths" to alias the package bloom-reader-lite-shared/dist to @shared,
+        // but it doesn't seem to work with Vite. Even after I add it to the vite.config.ts's rollup external array,
+        // well that lets it build okay but the app to load just a blank page when it's loaded into Expo.
+        // (Probably because the rollup external array just makes it acceptable at compile time,
+        // but requires something else to insert the external thing before runtime).
+        // "paths": {
+        //     "@shared/*": ["./node_modules/bloom-reader-lite-shared/dist/*"]
+        // }
     },
     "include": ["src"],
     "references": [{ "path": "./tsconfig.node.json" }]

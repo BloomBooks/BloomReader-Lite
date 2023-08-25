@@ -3,7 +3,7 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
-            "@shared/*": ["../shared/dist/*"]
+            "@shared/*": ["./node_modules/bloom-reader-lite-shared/dist/*"]
         }
     }
 }

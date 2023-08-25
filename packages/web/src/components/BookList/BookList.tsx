@@ -1,10 +1,13 @@
 import {
     BookCollection,
     emptyBookCollection,
-} from "@shared/models/BookCollection";
-import { isShelf, sortedListForShelf } from "@shared/models/BookOrShelf";
-import { UnpackZipFileMessage } from "@shared/toBackend/bloomReaderWebMessages";
-import { MessageToFrontend } from "@shared/toFrontend/messages";
+} from "bloom-reader-lite-shared/dist/models/BookCollection";
+import {
+    isShelf,
+    sortedListForShelf,
+} from "bloom-reader-lite-shared/dist/models/BookOrShelf";
+import { UnpackZipFileMessage } from "bloom-reader-lite-shared/dist/toBackend/bloomReaderWebMessages";
+import { MessageToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/messages";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
 // import BookListItem from "./BookListItem";
 

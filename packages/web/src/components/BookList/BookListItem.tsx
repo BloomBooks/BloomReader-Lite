@@ -1,4 +1,8 @@
-import { Book, BookFeatures, displayName } from "@shared/models/BookOrShelf";
+import {
+    Book,
+    BookFeatures,
+    displayName,
+} from "bloom-reader-lite-shared/dist/models/BookOrShelf";
 import React from "react";
 
 export interface IProps {

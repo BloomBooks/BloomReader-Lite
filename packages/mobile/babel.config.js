@@ -4,7 +4,7 @@ module.exports = function (api) {
         presets: ["babel-preset-expo"],
         plugins: [
             [
-                // resolve external path aliases
+                // resolve local packages ("yarn add link" or "yarn link") or external tsconfig.json path aliases
                 "module-resolver",
                 {
                     extensions: [
