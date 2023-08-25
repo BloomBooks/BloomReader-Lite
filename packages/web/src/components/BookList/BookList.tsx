@@ -1,13 +1,25 @@
-import { IonButton } from "@ionic/react";
+import {
+    BookCollection,
+    emptyBookCollection,
+} from "@shared/models/BookCollection";
+import { isShelf, sortedListForShelf } from "@shared/models/BookOrShelf";
 import { UnpackZipFileMessage } from "@shared/toBackend/bloomReaderWebMessages";
 import { MessageToFrontend } from "@shared/toFrontend/messages";
-import { FunctionComponent, useCallback, useEffect } from "react";
+import { FunctionComponent, useCallback, useEffect, useState } from "react";
+// import BookListItem from "./BookListItem";
 
 const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
 
 // TODO: This class needs to be renamed.
 export const BookList: FunctionComponent = () => {
+    // const [selectedItem /*, setSelectedItem*/] = useState<
+    //     BookOrShelf | undefined
+    // >(undefined);
     // const theme = useTheme();
+
+    const [bookCollection, setBookCollection] = useState<BookCollection>(
+        emptyBookCollection()
+    );
 
     // // TODO: This is way too small in Landscape mode. not sure why.
     // const headerImageHeight =
@@ -150,19 +162,25 @@ export const BookList: FunctionComponent = () => {
     //     bloomContext,
     // ]);
 
-    // const list = sortedListForShelf(
-    //     route.params.shelf,
-    //     bloomContext.bookCollection
-    // );
-
-    // useEffect(() => {
-    //     window.bloomReaderLiteApi.send({
-    //         messageType: "get-book-collection",
-    //     });
-    // }, []);
+    const list = sortedListForShelf(
+        // TODO: Set shelf
+        // route.params.shelf,
+        undefined,
+        bookCollection
+    );
 
     // componentDidMount
     useEffect(() => {
+        // On startup, let the backend know that we want to know the current book collection.
+        // (The backend could notify us automatically when the book collection changes,
+        // but the collection being initialized would happen prior to this code in web-land being ready,
+        // so we should explicitly request the collection the first time we're ready)
+        window.bloomReaderLiteApi.send({
+            messageType: "get-book-collection",
+        });
+
+        // Receive book-collection values
+        // ENHANCE: Maybe book-collection-changed isn't the best message name, since it also includes the reply to get-book-collection
         window.bloomReaderLiteApi.receive("book-collection-changed", (data) => {
             if (data.messageType !== "book-collection-changed") {
                 return;
@@ -171,13 +189,7 @@ export const BookList: FunctionComponent = () => {
                 "I should update the bookCollection to this",
                 data.bookCollection
             );
-        });
-        // On startup, let the backend know that we want to know the current book collection.
-        // (The backend could notify us automatically when the book collection changes,
-        // but the collection being initialized would happen prior to this code in web-land being ready,
-        // so we should explicitly request the collection the first time we're ready)
-        window.bloomReaderLiteApi.send({
-            messageType: "get-book-collection",
+            setBookCollection(data.bookCollection);
         });
     }, []);
 
@@ -212,23 +224,10 @@ export const BookList: FunctionComponent = () => {
     }, [handleEvent]);
 
     // TODO: Implement the real "list" assignment above.
-    const list = ["Book Title 1"];
-    const booksJsx = list.map((listItem) => {
+    // const list = ["Book Title 1"];
+    const booksJsx = list.map((item) => {
         return (
-            <IonButton
-                onClick={() => {
-                    // TODO: Generate zipFilePath programmatically
-                    const messageEvent: UnpackZipFileMessage = {
-                        messageType: "unpack-zip-file",
-                        zipFilePath:
-                            "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
-                    };
-                    window.bloomReaderLiteApi.send(messageEvent);
-                }}
-            >
-                {listItem}
-            </IonButton>
-            // <div
+            // <IonButton
             //     onClick={() => {
             //         // TODO: Generate zipFilePath programmatically
             //         const messageEvent: UnpackZipFileMessage = {
@@ -238,20 +237,36 @@ export const BookList: FunctionComponent = () => {
             //         };
             //         window.bloomReaderLiteApi.send(messageEvent);
             //     }}
-            //     onContextMenu={(e) => {
-            //         //     // TODO: Figure out longpress instead
-            //         //   e.preventDefault(); // Prevent default context menu
-            //         //   selectItem(item);
-            //     }}
             // >
-            //     {
-            //         listItem /* {isShelf(item) ? (
-            //   <ShelfListItem shelf={item} isSelected={selectedItem === item} />
-            // ) : (
-            //   <BookListItem book={item} isSelected={selectedItem === item} />
-            // )} */
-            //     }
-            // </div>
+            //     {listItem}
+            // </IonButton>
+            <div
+                onClick={() => {
+                    // TODO: Generate zipFilePath programmatically
+                    const messageEvent: UnpackZipFileMessage = {
+                        messageType: "unpack-zip-file",
+                        zipFilePath:
+                            "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
+                    };
+                    window.bloomReaderLiteApi.send(messageEvent);
+                }}
+                // onContextMenu={(e) => {
+                //     //     // TODO: Figure out longpress instead
+                //     //   e.preventDefault(); // Prevent default context menu
+                //     //   selectItem(item);
+                // }}
+            >
+                {isShelf(item) ? (
+                    <span>ShelfListItem is not implemented yet.</span>
+                ) : (
+                    <span>BookListItem</span>
+                    //   <ShelfListItem shelf={item} isSelected={selectedItem === item} />
+                    // <BookListItem
+                    //     book={item}
+                    //     isSelected={selectedItem === item}
+                    // />
+                )}
+            </div>
         );
     });
 

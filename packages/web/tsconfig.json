@@ -22,7 +22,8 @@
 
         /* Shared Types */
         "paths": {
-            "@shared/*": ["../shared/dist/*"]
+            // "@shared/*": ["../shared/dist/*"]
+            "@shared/*": ["../shared/src/*"] // Or you could map it to dist, but mapping to src enables better VSCode GoToDefinition functionality, hopefully without any negative ramifications
         }
     },
     "include": ["src"],

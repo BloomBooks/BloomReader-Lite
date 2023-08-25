@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { BookList } from "./BookList";
+import { BookList } from "./BookList/BookList";
 
 interface HomeProps {
     booksUrlRoot: string;

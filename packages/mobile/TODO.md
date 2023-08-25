@@ -1,1 +1,1 @@
-The BookCollection, Book, and Shelf file are duplicated between shared-types and in mobile. It'd be ideal to deprecate it from mobile and be in shared-types instead.
+Instead of @shared mapping to @shared/dist, I wonder if it should just map to @shared directly. Skip the whole building the shared thing entirely. One benefit I hope that will achieve is that when consuming packages use Go To Definition in VSCode, they would get the real implementation of functions instead of just the function definitions.
