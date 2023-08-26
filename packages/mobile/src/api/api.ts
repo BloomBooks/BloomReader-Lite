@@ -3,11 +3,16 @@ import { BookCollection } from "@shared/models/BookCollection";
 import { LogErrorMessage } from "@shared/toBackend/bloomPlayerMessages";
 import {
     ConsoleLogMessage,
+    GetThumbnailMessage,
     UnpackZipFileMessage,
 } from "@shared/toBackend/bloomReaderWebMessages";
 import { useContext } from "react";
 import { BloomContext } from "../BloomContext";
-import { useReplyToFrontend } from "../hooks/useReplyToFrontend";
+import {
+    useReplyToFrontend,
+    useReplyToFrontend2,
+} from "../hooks/useReplyToFrontend";
+import * as BookStorage from "../storage/BookStorage";
 import { safeOpenBookForReading } from "../storage/BookStorage";
 import * as ErrorLog from "../util/ErrorLog";
 import { findHtmFileAsync } from "../util/FileUtil";
@@ -24,6 +29,9 @@ export class Api implements IBloomReaderLiteApi {
     ) {
         this.bookCollection = bookCollection;
         this.reply = reply;
+    }
+    getThumbnail(data: GetThumbnailMessage) {
+        throw new Error("Method not implemented.");
     }
     getBookCollection() {
         throw new Error("Method not implemented.");
@@ -70,9 +78,10 @@ export function useApi() {
     const bloomContext = useContext(BloomContext);
 
     const replyToFrontend = useReplyToFrontend();
+    const replyToFrontend2 = useReplyToFrontend2();
 
     const api: IBloomReaderLiteApi = {
-        consoleLog: function (data: ConsoleLogMessage) {
+        consoleLog: (data: ConsoleLogMessage) => {
             try {
                 if (data.optionalParams?.length) {
                     WebviewUtil.log(
@@ -88,13 +97,36 @@ export function useApi() {
                 console.warn("consoleLog had an error.");
             }
         },
-        getBookCollection: function () {
+        getBookCollection: () => {
             replyToFrontend({
                 messageType: "book-collection-changed",
                 bookCollection: bloomContext.bookCollection,
             });
         },
-        unpackZipFile: async function (data: UnpackZipFileMessage) {
+        getThumbnail: async (request: GetThumbnailMessage) => {
+            console.log("Received request from " + request.id);
+            const responseTemplate = {
+                messageType: "get-thumbnail-response" as const,
+                requestId: request.id,
+            };
+            const thumbnail = await BookStorage.getThumbnail(request.thumbPath);
+            if (thumbnail) {
+                const { data, format } = thumbnail;
+                replyToFrontend2({
+                    ...responseTemplate,
+                    success: true,
+                    data,
+                    format,
+                });
+            } else {
+                replyToFrontend2({
+                    ...responseTemplate,
+                    success: false,
+                    reason: "thumbPath was undefined.",
+                });
+            }
+        },
+        unpackZipFile: async (data: UnpackZipFileMessage) => {
             const filePath = data.zipFilePath;
 
             const unzippedBookFolder = await safeOpenBookForReading(filePath);
@@ -111,7 +143,7 @@ export function useApi() {
                 indexPath: htmUrl,
             });
         },
-        errorLog: function (data: LogErrorMessage) {
+        errorLog: (data: LogErrorMessage) => {
             ErrorLog.logError({
                 logMessage: data.message,
             });

@@ -160,15 +160,15 @@ export async function safeOpenBookForReading(bookFilePath: string) {
 }
 
 export async function getThumbnail(
-    book: Book
+    thumbPath: string | undefined
 ): Promise<{ data: string; format: string } | undefined> {
-    if (!book.thumbPath) return undefined;
+    if (!thumbPath) return undefined;
 
     return {
-        data: await FileSystem.readAsStringAsync(book.thumbPath, {
+        data: await FileSystem.readAsStringAsync(thumbPath, {
             encoding: "base64",
         }),
-        format: extension(book.thumbPath),
+        format: extension(thumbPath),
     };
 }
 

@@ -4,11 +4,23 @@ import { BookCollection } from "../models/BookCollection";
 
 export type MessageToFrontend =
     | BookCollectionChangedMessage
+    | GetThumbnailResponseMessage
     | ZipFileUnpackedMessage;
+
+export type MessageToFrontendWithId = MessageToFrontend & {
+    id: string;
+};
 
 export type BookCollectionChangedMessage = {
     messageType: "book-collection-changed";
     bookCollection: BookCollection;
+};
+
+export type GetThumbnailResponseMessage = {
+    messageType: "get-thumbnail-response";
+    thumbPath: string;
+    data: string;
+    format: string;
 };
 
 /**

@@ -17,6 +17,9 @@ export function handleMessageReceived(
             case "get-book-collection":
                 api.getBookCollection();
                 break;
+            case "get-thumbnail":
+                api.getThumbnail(data);
+                break;
             case "unpack-zip-file":
                 api.unpackZipFile(data);
                 break;

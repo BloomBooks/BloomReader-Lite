@@ -3,21 +3,22 @@ import {
     emptyBookCollection,
 } from "bloom-reader-lite-shared/dist/models/BookCollection";
 import {
+    BookOrShelf,
     isShelf,
     sortedListForShelf,
 } from "bloom-reader-lite-shared/dist/models/BookOrShelf";
 import { UnpackZipFileMessage } from "bloom-reader-lite-shared/dist/toBackend/bloomReaderWebMessages";
 import { MessageToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/messages";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
-// import BookListItem from "./BookListItem";
+import BookListItem from "./BookListItem";
 
 const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
 
 // TODO: This class needs to be renamed.
 export const BookList: FunctionComponent = () => {
-    // const [selectedItem /*, setSelectedItem*/] = useState<
-    //     BookOrShelf | undefined
-    // >(undefined);
+    const [selectedItem /*, setSelectedItem*/] = useState<
+        BookOrShelf | undefined
+    >(undefined);
     // const theme = useTheme();
 
     const [bookCollection, setBookCollection] = useState<BookCollection>(
@@ -188,10 +189,6 @@ export const BookList: FunctionComponent = () => {
             if (data.messageType !== "book-collection-changed") {
                 return;
             }
-            console.log(
-                "I should update the bookCollection to this",
-                data.bookCollection
-            );
             setBookCollection(data.bookCollection);
         });
     }, []);
@@ -226,8 +223,6 @@ export const BookList: FunctionComponent = () => {
         window.bloomReaderLiteApi.receive("zip-file-unpacked", handleEvent);
     }, [handleEvent]);
 
-    // TODO: Implement the real "list" assignment above.
-    // const list = ["Book Title 1"];
     const booksJsx = list.map((item) => {
         return (
             <div
@@ -249,12 +244,12 @@ export const BookList: FunctionComponent = () => {
                 {isShelf(item) ? (
                     <span>ShelfListItem is not implemented yet.</span>
                 ) : (
-                    <span>BookListItem</span>
+                    // <span>BookListItem</span>
                     //   <ShelfListItem shelf={item} isSelected={selectedItem === item} />
-                    // <BookListItem
-                    //     book={item}
-                    //     isSelected={selectedItem === item}
-                    // />
+                    <BookListItem
+                        book={item}
+                        isSelected={selectedItem === item}
+                    />
                 )}
             </div>
         );

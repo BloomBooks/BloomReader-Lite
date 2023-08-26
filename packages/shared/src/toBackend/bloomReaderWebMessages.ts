@@ -1,7 +1,8 @@
 // This file represents the message events uniquely used in the context of the BloomReader-Lite webapp
 export type BloomReaderWebappMessages =
-    | GetBookCollectionMessage
     | ConsoleLogMessage
+    | GetBookCollectionMessage
+    | GetThumbnailMessage
     | UnpackZipFileMessage;
 
 export type ConsoleLogMessage = {
@@ -16,6 +17,15 @@ export type ConsoleLogMessage = {
  */
 export type GetBookCollectionMessage = {
     messageType: "get-book-collection";
+};
+
+/**
+ * Gets the books and shelves available in this collection
+ */
+export type GetThumbnailMessage = {
+    messageType: "get-thumbnail";
+    id: string; // TODO: Make this more generic
+    thumbPath: string;
 };
 
 /**
