@@ -1,7 +1,6 @@
-import { MessageToBackend } from "bloom-reader-lite-shared/dist/toBackend/messages";
 import {
     RequestToBackend,
-    RequestToBackendWithId,
+    RequestToBackendBase,
 } from "bloom-reader-lite-shared/dist/toBackend/requests";
 import { MessageToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/messages";
 import { ResponseToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/responses";
@@ -18,27 +17,72 @@ type PromiseResolveOrReject<T> = {
 type Id = string;
 
 export class FrontendApi {
-    // TODO: clean up this class
     private subscribers: Map<string, FrontendMessageListener[]> = new Map();
     private awaiters: Map<Id, PromiseResolveOrReject<ResponseToFrontend>> =
         new Map();
 
     /**
-     * Sends a message to the backend.
+     * Sends a simple request to the backend and returns immediately without waiting for a response from the backend.
      */
-    public send(obj: MessageToBackend | RequestToBackendWithId) {
-        const message = JSON.stringify(obj);
-        console.log("Sending: " + message);
+    public request(request: RequestToBackend & { id?: Id }) {
+        const message = JSON.stringify(request);
+        console.info("Frontend -> Backend: " + message);
 
-        // ENHANCE: Maybe the target should be more narrowly scoped rather than blasting "*"
-        // Does it work to put window.location.origin here?
-        window.postMessage(message, "*"); // any window may receive the message
+        window.postMessage(message, window.location.origin);
     }
 
     /**
-     * This function is so that the frontend can register to receive specified messages
+     * Sends a request to the backend and waits for the response
+     * @returns A promise which is fulfilled with the response from the backend.
+     *          If there is an error, response.success will be false.
+     *          Please check the success field of the response before processing.
      */
-    public receive(
+    public requestAsync(
+        request: RequestToBackendBase
+    ): Promise<ResponseToFrontend> {
+        // The GUID helps make it easy to ensure that if multiple requests of the same type occur at once,
+        // each caller gets the right response.
+        const guid = createGuid();
+
+        // Create a promise and save its settlement functions in this.awaiters.
+        // When the backend is done, it should find its entry in this.awaiter and invoke the promise's resolve function.
+        const promise = new Promise<ResponseToFrontend>((resolve, reject) => {
+            this.awaiters.set(guid, {
+                resolve,
+                reject,
+            });
+
+            this.request({
+                ...request,
+                id: guid,
+            });
+        });
+
+        return promise;
+    }
+
+    /**
+     * Allows the backend to respond to the frontend
+     */
+    public respondToFrontend(response: ResponseToFrontend) {
+        const awaiter = this.awaiters.get(response.requestId);
+        if (!awaiter) {
+            console.warn("Unknown message ID: " + response.requestId);
+            return;
+        }
+
+        console.info(
+            `Frontend received ${response.messageType} response for request ${response.requestId}`
+        );
+        this.awaiters.delete(response.requestId);
+
+        awaiter.resolve(response);
+    }
+
+    /**
+     * Allows the frontend to subscribe to receive the specified messages
+     */
+    public subscribe(
         messageType: MessageType,
         listener: FrontendMessageListener
     ) {
@@ -51,12 +95,29 @@ export class FrontendApi {
     }
 
     /**
+     * Allows the frontend to unsubscribe from the specified messages
+     */
+    public unsubscribe(
+        messageType: MessageType,
+        listenerToRemove: FrontendMessageListener
+    ) {
+        const subscribers = this.subscribers.get(messageType);
+        if (!subscribers) {
+            return;
+        }
+
+        const filteredSubscribers = subscribers.filter(
+            (x) => x !== listenerToRemove
+        );
+        this.subscribers.set(messageType, filteredSubscribers);
+    }
+
+    /**
      * This function allows the backend (via Javascript injection) to dispatch a message to the frontend.
      * Remarks: Also works to use postMessage as an intermediary, but that's more indirect.
      */
-    public replyToFrontend(message: string) {
-        // TODO: I'm thinking to rename this to "notify"
-        console.log("Frontend received message:\n\t" + message);
+    public notifyFrontend(message: string) {
+        console.info("Frontend received notification:\n\t" + message);
 
         // ENHANCE: Could actually verify the type at runtime using zod/etc.
         // instead just blindly hoping that this is correct
@@ -72,62 +133,11 @@ export class FrontendApi {
             listener(data);
         });
     }
-
-    /**
-     * This function is so that the frontend can register to receive specified messages
-     */
-    public sendToBackendAsync(
-        message: RequestToBackend
-    ): Promise<ResponseToFrontend> {
-        const guid = createGuid();
-
-        const promise = new Promise<ResponseToFrontend>((resolve, reject) => {
-            this.awaiters.set(guid, {
-                resolve,
-                reject,
-            });
-
-            this.send({
-                ...message,
-                id: guid,
-            });
-        });
-
-        return promise;
-    }
-
-    public replyToFrontend2(response: ResponseToFrontend) {
-        const awaiter = this.awaiters.get(response.requestId);
-        if (!awaiter) {
-            console.warn("Unknown message ID: " + response.requestId);
-            return;
-        }
-
-        console.log(`${response.requestId}, you've got mail!`);
-
-        // ENHANCE: At this point, you could cut {id} off the response object.
-        // It's unnecessary noise to the consumer, I think.
-        awaiter.resolve(response);
-    }
-
-    // public reportErrorToFrontend(
-    //     messageId: Id,
-    //     statusCode: number,
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     reason: any
-    // ) {
-    //     const subscriber = this.subscribers2.get(messageId);
-    //     if (!subscriber) {
-    //         console.warn("Unknown message ID: " + messageId);
-    //         return;
-    //     }
-    //     subscriber.reject({ ...reason, statusCode });
-    // }
 }
 
 export function initializeMessageHandler() {
     if (!window.bloomReaderLiteApi) {
         window.bloomReaderLiteApi = new FrontendApi();
-        console.log("window.bloomReaderLiteApi initialized");
+        console.info("window.bloomReaderLiteApi initialized");
     }
 }

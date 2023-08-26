@@ -1,7 +1,4 @@
-import { BloomPlayerMessages } from "./bloomPlayerMessages";
-import { BloomReaderWebappMessages } from "./bloomReaderWebMessages";
+import { BloomPlayerMessage } from "./bloomPlayerMessages";
+import { RequestToBackend } from "./requests";
 
-/**
- * All the postMessage MessageEvents that BloomReader-Lite should expect to handle
- */
-export type MessageToBackend = BloomPlayerMessages | BloomReaderWebappMessages;
+export type MessageToBackend = BloomPlayerMessage | RequestToBackend;

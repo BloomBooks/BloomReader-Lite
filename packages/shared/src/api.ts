@@ -1,15 +1,16 @@
 import { LogErrorMessage } from "./toBackend/bloomPlayerMessages";
 import {
-    ConsoleLogMessage,
-    GetThumbnailMessage,
-    UnpackZipFileMessage,
-} from "./toBackend/bloomReaderWebMessages";
+    ConsoleLogRequest,
+    GetBookCollectionRequest,
+    GetThumbnailRequest,
+    UnpackZipFileRequest,
+} from "./toBackend/requests";
 
 export interface IBloomReaderLiteApi extends IBloomPlayerApi {
-    consoleLog(data: ConsoleLogMessage);
-    getBookCollection();
-    getThumbnail(data: GetThumbnailMessage);
-    unpackZipFile(data: UnpackZipFileMessage): Promise<void>;
+    consoleLog(request: ConsoleLogRequest);
+    getBookCollection(request: GetBookCollectionRequest);
+    getThumbnail(request: GetThumbnailRequest);
+    unpackZipFile(request: UnpackZipFileRequest): Promise<void>;
 }
 
 export interface IBloomPlayerApi {

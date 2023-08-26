@@ -3,7 +3,10 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
-            "@shared/*": ["./node_modules/bloom-reader-lite-shared/dist/*"]
+            // The VSCode Intellisense works better this way
+            "@shared/*": ["../shared/dist/*"]
+            // More proper long-term I believe, but intellisense doesn't work as well
+            // "@shared/*": ["./node_modules/bloom-reader-lite-shared/dist/*"]
         }
     }
 }

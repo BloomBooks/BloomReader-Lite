@@ -15,7 +15,7 @@ export function handleMessageReceived(
                 api.consoleLog(data);
                 break;
             case "get-book-collection":
-                api.getBookCollection();
+                api.getBookCollection(data);
                 break;
             case "get-thumbnail":
                 api.getThumbnail(data);

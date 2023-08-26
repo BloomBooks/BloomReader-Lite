@@ -19,19 +19,16 @@ interface IThumbnail {
 export const BookListItem: FunctionComponent<IProps> = (props) => {
     const [thumbnail, setThumbnail] = useState<IThumbnail | undefined>();
 
-    // componentDidMount
     useEffect(() => {
         async function loadThumbnailAsync() {
             if (!props.book.thumbPath) {
                 return;
             }
 
-            const response = await window.bloomReaderLiteApi.sendToBackendAsync(
-                {
-                    messageType: "get-thumbnail",
-                    thumbPath: props.book.thumbPath,
-                }
-            );
+            const response = await window.bloomReaderLiteApi.requestAsync({
+                messageType: "get-thumbnail",
+                thumbPath: props.book.thumbPath,
+            });
 
             // Paranoia check
             if (response.messageType !== "get-thumbnail-response") {

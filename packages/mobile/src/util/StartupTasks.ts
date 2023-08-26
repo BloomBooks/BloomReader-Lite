@@ -10,7 +10,7 @@ import { copyAssetAsync, ensureFolderAsync } from "./FileUtil";
 import { Path } from "./Path";
 
 export default async function startupTasks(): Promise<void> {
-    console.info("startupTasks(): starting.");
+    console.log("startupTasks(): starting.");
 
     await Promise.all([
         loadWebBundleAsync(),
@@ -18,7 +18,7 @@ export default async function startupTasks(): Promise<void> {
         importSampleBooks(),
     ]);
 
-    console.info("startupTasks(): done.");
+    console.log("startupTasks(): done.");
 }
 
 async function loadWebBundleAsync() {

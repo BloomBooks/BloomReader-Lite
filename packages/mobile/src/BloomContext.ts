@@ -6,13 +6,15 @@ import {
 import React, { MutableRefObject } from "react";
 import WebView from "react-native-webview";
 
-export const BloomContext = React.createContext<{
+export type BloomContextType = {
     drawerLockMode: "unlocked" | "locked-closed";
     setDrawerLockMode: (lockMode: "unlocked" | "locked-closed") => void;
     bookCollection: BookCollection;
     setBookCollection: (bc: BookCollection) => void;
     activeWebviewRef?: MutableRefObject<WebView | null>;
-}>({
+};
+
+export const BloomContext = React.createContext<BloomContextType>({
     drawerLockMode: "unlocked",
     setDrawerLockMode: () => {},
     bookCollection: emptyBookCollection(),

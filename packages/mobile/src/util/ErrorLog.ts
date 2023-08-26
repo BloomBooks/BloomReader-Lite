@@ -1,5 +1,5 @@
 import * as FileSystem from "expo-file-system";
-import { ToastAndroid, Platform } from "react-native";
+import { Platform, ToastAndroid } from "react-native";
 // import email from "react-native-email";
 // import I18n from "../i18n/i18n";
 
@@ -54,7 +54,7 @@ export function logNewAppVersion(appVersion: string): void {
 // }
 
 async function writeToErrorLog(message: string): Promise<void> {
-    console.info(message);
+    console.log(message);
 
     // TODO: Enable me
 

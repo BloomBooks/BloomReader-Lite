@@ -11,7 +11,7 @@ import { BloomContext } from "./BloomContext";
 import { useApi } from "./api/api";
 import { handleMessageReceived } from "./api/handleMessageReceived";
 import { Locations } from "./constants/Locations";
-import { useReplyToFrontend } from "./hooks/useReplyToFrontend";
+import { useNotifyFrontend } from "./hooks/useReplyToFrontend";
 import { syncCollectionAndFetch } from "./models/BookCollection";
 import { createUrlSafely } from "./util/UrlUtil";
 import { WebviewUtil } from "./util/WebviewUtil";
@@ -32,7 +32,7 @@ export const WebviewHost: FunctionComponent = (props) => {
         booksUrlRoot: Locations.BooksFolder,
     });
 
-    console.info({ uri });
+    console.log({ uri });
 
     // on mount effects
     useEffect(() => {
@@ -46,7 +46,7 @@ export const WebviewHost: FunctionComponent = (props) => {
         loadAsync();
     }, []);
 
-    const handleReplyToFrontEnd = useReplyToFrontend();
+    const handleReplyToFrontEnd = useNotifyFrontend();
 
     ////////////////////////////////////////////////////////
     // Sending and receiving messages to/from the webview //
@@ -142,7 +142,7 @@ function onShouldStartLoadWithRequest(event: ShouldStartLoadRequest) {
     // Goal: If a book has a normal hyperlink (not file:///), it should open in the OS's browser, not the webview.
     if (url.protocol !== "file:") {
         Linking.openURL(event.url);
-        console.info(
+        console.log(
             "[WebviewHost] Load aborted, opening URL in default browser instead. URL: " +
                 url
         );
@@ -150,7 +150,7 @@ function onShouldStartLoadWithRequest(event: ShouldStartLoadRequest) {
     }
     console.log("Loading url: " + url);
     // if (url.pathname.endsWith("/bloom-player/bloomplayer.htm")) {
-    //     console.info(`Intercepting bloom-player request ${urlStr}`);
+    //     console.log(`Intercepting bloom-player request ${urlStr}`);
     //     const bookUrlParam = url.searchParams.get("url");
     //     if (!bookUrlParam) {
     //         return true;

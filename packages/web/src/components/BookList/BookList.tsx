@@ -7,8 +7,9 @@ import {
     isShelf,
     sortedListForShelf,
 } from "bloom-reader-lite-shared/dist/models/BookOrShelf";
-import { UnpackZipFileMessage } from "bloom-reader-lite-shared/dist/toBackend/bloomReaderWebMessages";
+import { UnpackZipFileRequestBase } from "bloom-reader-lite-shared/dist/toBackend/requests";
 import { MessageToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/messages";
+import { ResponseToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/responses";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import BookListItem from "./BookListItem";
 
@@ -175,32 +176,47 @@ export const BookList: FunctionComponent = () => {
 
     // componentDidMount
     useEffect(() => {
+        const updateBookCollection = (
+            data: MessageToFrontend | ResponseToFrontend
+        ) => {
+            if (
+                data.messageType !== "book-collection-changed" &&
+                data.messageType !== "get-book-collection-response"
+            ) {
+                return;
+            }
+            setBookCollection(data.bookCollection);
+        };
         // On startup, let the backend know that we want to know the current book collection.
         // (The backend could notify us automatically when the book collection changes,
         // but the collection being initialized would happen prior to this code in web-land being ready,
         // so we should explicitly request the collection the first time we're ready)
-        window.bloomReaderLiteApi.send({
-            messageType: "get-book-collection",
-        });
+        window.bloomReaderLiteApi
+            .requestAsync({
+                messageType: "get-book-collection",
+            })
+            .then(updateBookCollection);
 
-        // Receive book-collection values
-        // ENHANCE: Maybe book-collection-changed isn't the best message name, since it also includes the reply to get-book-collection
-        window.bloomReaderLiteApi.receive("book-collection-changed", (data) => {
-            if (data.messageType !== "book-collection-changed") {
-                return;
-            }
-            setBookCollection(data.bookCollection);
-        });
+        // Also subscribe to notifications whenever the book collection changes
+        window.bloomReaderLiteApi.subscribe(
+            "book-collection-changed",
+            updateBookCollection
+        );
+
+        // Cleanup
+        return () => {
+            console.info("Unsubscribing from book-collection-changed.");
+            window.bloomReaderLiteApi.unsubscribe(
+                "book-collection-changed",
+                updateBookCollection
+            );
+        };
     }, []);
 
-    const handleEvent = useCallback((data: MessageToFrontend) => {
-        if (data.messageType !== "zip-file-unpacked") {
-            return;
-        }
-
+    const onBookUnpacked = useCallback((bookIndexUrl: string) => {
         // The query params that come after the "?" in a bloomPlayer URL
         const queryParams: Record<string, string> = {
-            url: data.indexPath,
+            url: bookIndexUrl,
             centerVertically: "true",
             showBackButton: "true",
             independent: "false",
@@ -214,26 +230,32 @@ export const BookList: FunctionComponent = () => {
             .join("&");
 
         const readUri = `${BLOOM_PLAYER_PATH}?${queryParamsString}`;
-        console.log("Read uri: " + readUri);
+        console.info("Read uri: " + readUri);
 
         window.location.href = readUri;
     }, []);
 
-    useEffect(() => {
-        window.bloomReaderLiteApi.receive("zip-file-unpacked", handleEvent);
-    }, [handleEvent]);
-
     const booksJsx = list.map((item) => {
         return (
             <div
-                onClick={() => {
+                onClick={async () => {
                     // TODO: Generate zipFilePath programmatically
-                    const messageEvent: UnpackZipFileMessage = {
+                    const request: UnpackZipFileRequestBase = {
                         messageType: "unpack-zip-file",
                         zipFilePath:
                             "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
                     };
-                    window.bloomReaderLiteApi.send(messageEvent);
+                    const response =
+                        await window.bloomReaderLiteApi.requestAsync(request);
+
+                    if (response.messageType !== "unpack-zip-file-response") {
+                        return;
+                    } else if (!response.success) {
+                        // TODO: Inform the user that extracting the book failed and tell them what to try next.
+                        return;
+                    }
+
+                    onBookUnpacked(response.indexPath);
                 }}
                 // onContextMenu={(e) => {
                 //     //     // TODO: Figure out longpress instead
