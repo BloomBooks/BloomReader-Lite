@@ -10,7 +10,7 @@ module.exports = {
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended",
+        // "plugin:prettier/recommended",   // If you do re-enable it, make sure to install this plugin. But not sure why it's installed if we just turn it off later.
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -29,7 +29,7 @@ module.exports = {
     rules: {
         // Rules to apply on top of the baseline ones (from "extends")
         // FYI, to see all the rule settings, run "eslint --print-config *.ts"
-        "prettier/prettier": "off",
+        // "prettier/prettier": "off",
         "no-var": "warn",
         "prefer-const": "warn",
         "no-useless-escape": "off",
