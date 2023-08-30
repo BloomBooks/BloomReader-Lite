@@ -13,7 +13,7 @@ export function useNotifyFrontend() {
 
         const messageStr = JSON.stringify(message).replaceAll('"', '\\"');
         const action = `
-    window.bloomReaderLiteApi?.notifyFrontend("${messageStr}");
+    window.bloomReaderLite?.toFrontend?.notify("${messageStr}");
             `;
 
         doActionOnFrontend(action, bloomContext.activeWebviewRef?.current);
@@ -29,7 +29,7 @@ export function useRespondToFrontend() {
         console.log("Backend -> FrontEnd:", message.messageType);
 
         const action = `
-window.bloomReaderLiteApi?.respondToFrontend(${JSON.stringify(message)})
+window.bloomReaderLite?.toFrontend?.respond(${JSON.stringify(message)})
 `;
 
         doActionOnFrontend(action, bloomContext.activeWebviewRef?.current);

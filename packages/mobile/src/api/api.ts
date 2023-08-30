@@ -2,16 +2,16 @@ import { IBloomReaderLiteApi } from "@shared/api";
 import { LogErrorMessage } from "@shared/toBackend/bloomPlayerMessages";
 import {
     ConsoleLogRequest,
+    GetBookCollectionRequest,
     GetThumbnailRequest,
     UnpackZipFileRequest,
-    WithId,
 } from "bloom-reader-lite-shared/dist/toBackend/requests";
 import { useContext } from "react";
 import { BloomContext } from "../BloomContext";
 import {
     useNotifyFrontend,
     useRespondToFrontend,
-} from "../hooks/useReplyToFrontend";
+} from "../hooks/toFrontendHooks";
 import * as BookStorage from "../storage/BookStorage";
 import { safeOpenBookForReading } from "../storage/BookStorage";
 import * as ErrorLog from "../util/ErrorLog";
@@ -45,7 +45,7 @@ export function useApi() {
                 console.warn("consoleLog had an error.");
             }
         },
-        getBookCollection: (request: WithId) => {
+        getBookCollection: (request: GetBookCollectionRequest) => {
             respondToFrontend({
                 messageType: "get-book-collection-response",
                 success: true,
@@ -53,7 +53,7 @@ export function useApi() {
                 bookCollection: bloomContext.bookCollection,
             });
         },
-        getThumbnail: async (request: GetThumbnailRequest & WithId) => {
+        getThumbnail: async (request: GetThumbnailRequest) => {
             const responseTemplate = {
                 messageType: "get-thumbnail-response" as const,
                 requestId: request.id,
@@ -90,7 +90,7 @@ export function useApi() {
                 });
             }
         },
-        unpackZipFile: async (request: UnpackZipFileRequest & WithId) => {
+        unpackZipFile: async (request: UnpackZipFileRequest) => {
             const filePath = request.zipFilePath;
 
             const unzippedBookFolder = await safeOpenBookForReading(filePath);

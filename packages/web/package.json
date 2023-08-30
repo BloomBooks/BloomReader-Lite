@@ -15,6 +15,9 @@
         "postinstall": "ts-node --esm ./scripts/postinstall.mts"
     },
     "dependencies": {
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@mui/material": "^5.14.6",
         "bloom-player": "^2.1.28",
         "bloom-reader-lite-shared": "link:./../shared",
         "react": "^18.2.0",

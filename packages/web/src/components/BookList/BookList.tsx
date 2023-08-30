@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import {
     BookCollection,
     emptyBookCollection,
@@ -191,14 +192,14 @@ export const BookList: FunctionComponent = () => {
         // (The backend could notify us automatically when the book collection changes,
         // but the collection being initialized would happen prior to this code in web-land being ready,
         // so we should explicitly request the collection the first time we're ready)
-        window.bloomReaderLiteApi
+        window.bloomReaderLite.api
             .requestAsync({
                 messageType: "get-book-collection",
             })
             .then(updateBookCollection);
 
         // Also subscribe to notifications whenever the book collection changes
-        window.bloomReaderLiteApi.subscribe(
+        window.bloomReaderLite.api.subscribe(
             "book-collection-changed",
             updateBookCollection
         );
@@ -206,7 +207,7 @@ export const BookList: FunctionComponent = () => {
         // Cleanup
         return () => {
             console.info("Unsubscribing from book-collection-changed.");
-            window.bloomReaderLiteApi.unsubscribe(
+            window.bloomReaderLite.api.unsubscribe(
                 "book-collection-changed",
                 updateBookCollection
             );
@@ -246,7 +247,7 @@ export const BookList: FunctionComponent = () => {
                             "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
                     };
                     const response =
-                        await window.bloomReaderLiteApi.requestAsync(request);
+                        await window.bloomReaderLite.api.requestAsync(request);
 
                     if (response.messageType !== "unpack-zip-file-response") {
                         return;
@@ -277,12 +278,24 @@ export const BookList: FunctionComponent = () => {
         );
     });
 
+    // const host = "https://bloomlibrary.org";
+    const host = "https://alpha.bloomlibrary.org";
+    // const host = "https://dev-alpha.bloomlibrary.org";
+    const libraryUrl = host + "/app-hosted-v1/langs";
+
     return (
         <div>
             {booksJsx}
             <br />
             <div>
-                <a href={"https://bloomlibrary.org"}>BLORG</a>
+                <Button
+                    variant="outlined"
+                    onClick={() => {
+                        window.location.href = libraryUrl;
+                    }}
+                >
+                    Get more books from our library
+                </Button>
             </div>
         </div>
     );

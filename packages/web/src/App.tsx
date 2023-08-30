@@ -1,12 +1,12 @@
 import "./App.css";
-import { initializeMessageHandler } from "./FrontendApi";
+import { initializeWindowObject } from "./api/Api";
 import { Home } from "./components/Home";
 import { getQueryParam } from "./util/UrlUtil";
 
 function App() {
     const booksUrlRoot = getQueryParam("booksUrlRoot") ?? "../Books";
 
-    initializeMessageHandler();
+    initializeWindowObject();
 
     console.info({ booksUrlRoot });
 

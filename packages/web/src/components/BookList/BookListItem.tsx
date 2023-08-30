@@ -25,7 +25,7 @@ export const BookListItem: FunctionComponent<IProps> = (props) => {
                 return;
             }
 
-            const response = await window.bloomReaderLiteApi.requestAsync({
+            const response = await window.bloomReaderLite.api.requestAsync({
                 messageType: "get-thumbnail",
                 thumbPath: props.book.thumbPath,
             });

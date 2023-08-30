@@ -1,10 +1,10 @@
-import { FrontendApi } from "./FrontendApi";
+import { IBloomReaderLiteWindowObject } from "./api/Api";
 
 declare global {
     interface Window {
         // This matches the Electron bloompub-viewer's pattern.
         // You could alternatively consider a getBloomReaderLiteApi() function which is basically like a singleton instance method.
-        bloomReaderLiteApi: FrontendApi;
+        bloomReaderLite: IBloomReaderLiteWindowObject;
     }
 }
 
