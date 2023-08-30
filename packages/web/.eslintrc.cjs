@@ -50,5 +50,6 @@ module.exports = {
         // "@typescript-eslint/triple-slash-reference": "off", // a lot of our legacy code still uses this
         "react/no-unescaped-entities": "off", // Complains about some special chars that sort of work, but due to the burden that encoded chars present to localizers, we'd prefer not to encode them if not necessary.
         "react/prop-types": "off", // Seems to require validation on the props parameter itself, but Typescript can already figure out the types through annotations in different places, seems unnecessary
+        "react/react-in-jsx-scope": "off", // No longer needed after React 17+
     },
 };

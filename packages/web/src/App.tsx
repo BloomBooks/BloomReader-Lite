@@ -1,5 +1,7 @@
+import { ThemeProvider } from "@mui/material/styles";
 import "./App.css";
 import { initializeWindowObject } from "./api/Api";
+import { lightTheme as bloomLightTheme } from "./bloomMaterialUiTheme";
 import { Home } from "./components/Home";
 import { getQueryParam } from "./util/UrlUtil";
 
@@ -10,7 +12,11 @@ function App() {
 
     console.info({ booksUrlRoot });
 
-    return <Home booksUrlRoot={booksUrlRoot} />;
+    return (
+        <ThemeProvider theme={bloomLightTheme}>
+            <Home booksUrlRoot={booksUrlRoot} />
+        </ThemeProvider>
+    );
 }
 
 export default App;

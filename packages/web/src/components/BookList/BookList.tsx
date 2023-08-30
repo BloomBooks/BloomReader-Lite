@@ -1,4 +1,8 @@
-import { Button } from "@mui/material";
+/** @jsxImportSource @emotion/react **/
+import { css } from "@emotion/react";
+import Button from "@mui/material/Button";
+
+import SearchIcon from "@mui/icons-material/Search";
 import {
     BookCollection,
     emptyBookCollection,
@@ -12,15 +16,16 @@ import { UnpackZipFileRequestBase } from "bloom-reader-lite-shared/dist/toBacken
 import { MessageToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/messages";
 import { ResponseToFrontend } from "bloom-reader-lite-shared/dist/toFrontend/responses";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { BloomReaderAppBar } from "./AppBar";
 import BookListItem from "./BookListItem";
 
 const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
 
 // TODO: This class needs to be renamed.
 export const BookList: FunctionComponent = () => {
-    const [selectedItem /*, setSelectedItem*/] = useState<
-        BookOrShelf | undefined
-    >(undefined);
+    const [selectedItem, setSelectedItem] = useState<BookOrShelf | undefined>(
+        undefined
+    );
     // const theme = useTheme();
 
     const [bookCollection, setBookCollection] = useState<BookCollection>(
@@ -33,13 +38,13 @@ export const BookList: FunctionComponent = () => {
 
     // const bloomContext = React.useContext(BloomContext);
 
-    // const selectItem = (item: BookOrShelf) => {
-    //     setSelectedItem(item);
-    // };
+    const selectItem = (item: BookOrShelf) => {
+        setSelectedItem(item);
+    };
 
-    // const clearSelectedItem = () => {
-    //     setSelectedItem(undefined);
-    // };
+    const clearSelectedItem = () => {
+        setSelectedItem(undefined);
+    };
 
     // React.useEffect(() => {
     //     const syncCollectionAsync = async () => {
@@ -232,13 +237,12 @@ export const BookList: FunctionComponent = () => {
 
         const readUri = `${BLOOM_PLAYER_PATH}?${queryParamsString}`;
         console.info("Read uri: " + readUri);
-
-        window.location.href = readUri;
     }, []);
 
     const booksJsx = list.map((item) => {
         return (
             <div
+                key={item.filepath}
                 onClick={async () => {
                     // TODO: Generate zipFilePath programmatically
                     const request: UnpackZipFileRequestBase = {
@@ -285,6 +289,7 @@ export const BookList: FunctionComponent = () => {
 
     return (
         <div>
+            <BloomReaderAppBar />
             {booksJsx}
             <br />
             <div>
@@ -293,6 +298,10 @@ export const BookList: FunctionComponent = () => {
                     onClick={() => {
                         window.location.href = libraryUrl;
                     }}
+                    css={css`
+                        text-transform: unset; // Prevent MUI from making it all caps
+                    `}
+                    startIcon={<SearchIcon />}
                 >
                     Get more books from our library
                 </Button>
