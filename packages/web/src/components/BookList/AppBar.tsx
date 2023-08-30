@@ -101,7 +101,7 @@ export function BloomReaderAppBar() {
             >
                 {/* There's a header section that goes here */}
                 <List>
-                    {[I18n.t("Open BloomPUB file")].map((text, index) => (
+                    {[I18n.t("Open BloomPUB file")].map((text, _index) => (
                         <ListItem key={text} disablePadding>
                             <ListItemButton>
                                 {/* TODO: Use bookshelf.png instead */}

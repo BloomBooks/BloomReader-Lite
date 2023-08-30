@@ -9,7 +9,7 @@ export default defineConfig({
         assetsDir: "./", // Simpler to generate a flat structure rather than one with subfolders.  But it's okay to delete this if needed. Downstream consumers (e.g. Expo's webBundleAssets) may just need more smarts added to them.
     },
     server: {
-        open: "/?booksUrlRoot=..%2Fmock-data%2FBooks", // That is, ../mock-data/Books
+        open: "/?booksUrlRoot=..%2Fmock-data%2FBooks&dev=1", // That is, ../mock-data/Books
     },
     resolve: {
         // preserveSymlinks is needed or else local packages added via "yarn add link:[path]" or packages that have been "yarn link"ed won't work

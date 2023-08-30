@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react **/
+import { css } from "@emotion/react";
+import { Color } from "bloom-reader-lite-shared/dist/constants/Color";
 import {
     Book,
     BookFeatures,
@@ -53,24 +56,19 @@ export const BookListItem: FunctionComponent<IProps> = (props) => {
 
     return (
         <div
-        // style={[
-        //     styles.container,
-        //     this.props.isSelected ? styles.containerSelected : {},
-        // ]}
+            css={css`
+                ${styles.container};
+                ${props.isSelected ? styles.containerSelected : ""}
+            `}
         >
             {thumbnail && (
                 <img
                     src={`data:image/${thumbnail.format};base64,${thumbnail.data}`}
+                    css={styles.thumbnail}
                 />
-                // <Image
-                //     style={styles.thumbnail}
-                //     source={{
-                //         uri: `data:image/${this.state.thumbnail.format};base64,${this.state.thumbnail.data}`,
-                //     }}
-                // />
             )}
-            <div /*style={styles.titleContainer}*/>
-                <span /*style={styles.title}*/>{displayName(book)}</span>
+            <div css={styles.titleContainer}>
+                <span css={styles.title}>{displayName(book)}</span>
                 {props.book.features.includes(BookFeatures.talkingBook) && (
                     <span>Talking Book</span>
                     // TODO: IMPLEMENT ME
@@ -84,31 +82,33 @@ export const BookListItem: FunctionComponent<IProps> = (props) => {
     );
 };
 
-// export const styles = StyleSheet.create({
-//     container: {
-//         flexDirection: "row",
-//         padding: 8,
-//         backgroundColor: "white",
-//     },
-//     containerSelected: {
-//         backgroundColor: ThemeColors.lightGray,
-//     },
-//     titleContainer: {
-//         flexDirection: "column",
-//         paddingLeft: 8,
-//         flex: 1,
-//     },
-//     title: {
-//         fontSize: 20,
-//         marginBottom: 4,
-//         color: "black",
-//         flex: 1,
-//         flexWrap: "wrap",
-//     },
-//     thumbnail: {
-//         width: 64,
-//         height: 64,
-//     },
-// });
+const styles = {
+    container: css`
+        display: flex;
+        flex-direction: row;
+        padding: 8px;
+        background-color: white;
+    `,
+    containerSelected: css`
+        background-color: ${Color.lightGray};
+    `,
+    titleContainer: css`
+        display: flex;
+        flex-direction: column;
+        padding-left: 8px;
+        flex: 1;
+    `,
+    title: css`
+        font-size: 20px;
+        margin-bottom: 4px;
+        color: black;
+        flex: 1;
+        flex-wrap: wrap;
+    `,
+    thumbnail: css`
+        width: 64px;
+        height: 64px;
+    `,
+};
 
 export default BookListItem;

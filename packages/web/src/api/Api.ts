@@ -107,7 +107,8 @@ class BackendApi {
 /**
  * API for the backend to talk to the frontend
  */
-class FrontendApi {
+export class FrontendApi {
+    // ENHANCE: I'd ideallly like this not to be exported, but MockBackend.ts needs it.
     private subscribers;
     private awaiters;
 

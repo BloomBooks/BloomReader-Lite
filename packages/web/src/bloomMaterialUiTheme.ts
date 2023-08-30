@@ -1,33 +1,6 @@
 import { createTheme } from "@mui/material/styles";
+import { Color } from "bloom-reader-lite-shared/dist/constants/Color";
 
-export const kBloomDisabledOpacity = 0.38;
-export const kBloomDisabledText = `rgba(0, 0, 0, ${kBloomDisabledOpacity})`;
-
-export const kBloomRed = "#d65649";
-export const kBloomGray = "#4E4E4E";
-
-export const kBloomBlue = "#1d94a4";
-export const kBloomBlueTextBackground = "#19818f"; // darker for better contrast
-export const kBloomBlue50Transparent = "#8ecad280";
-export const kBloomPurple = "#96668f";
-const kDialogTopBottomGray = "#F1F3F4";
-const kGreyOnDarkColor = "#988b8b";
-export const kBloomGold = "#f3aa18";
-export const kErrorColor = "red";
-export const kDialogPadding = "10px";
-export const kLogBackgroundColor = "#fcfcfc";
-export const kBannerGray = "#ebebeb";
-export const kMainPanelBackgroundColor = "white";
-export const kOptionPanelBackgroundColor = kDialogTopBottomGray;
-export const kBloomYellow = "#FEBF00";
-export const kPanelBackground = "#2e2e2e";
-export const kDarkestBackground = "#1a1a1a";
-export const kDisabledControlGray = "#bbb";
-export const kMutedTextGray = "gray";
-export const kVerticalSpacingBetweenDialogSections = "20px";
-export const kBorderRadiusForSpecialBlocks = "3px";
-export const kBloomBuff = "#d2d2d2";
-export const kWarningColor = "#d65649";
 // // css we want to apply to each MuiSelect to get the look we like.
 // export const kSelectCss = `
 //     background-color: white;
@@ -61,13 +34,13 @@ export const lightTheme = createTheme({
     //spacing: 23,
     palette: {
         // primary: { main: kBloomBlue },
-        primary: { main: kBloomRed },
-        secondary: { main: kBloomPurple },
-        warning: { main: kBloomGold },
-        text: { disabled: kBloomDisabledText },
+        primary: { main: Color.bloomRed },
+        secondary: { main: Color.bloomPurple },
+        warning: { main: Color.bloomGold },
+        text: { disabled: Color.bloomDisabledText },
         action: {
-            disabled: kBloomDisabledText,
-            disabledOpacity: kBloomDisabledOpacity,
+            disabled: Color.bloomDisabledText,
+            disabledOpacity: Color.bloomDisabledOpacity,
         },
     },
     typography: {
@@ -94,7 +67,7 @@ export const lightTheme = createTheme({
         MuiTooltip: {
             styleOverrides: {
                 tooltip: {
-                    backgroundColor: kBloomBlueTextBackground,
+                    backgroundColor: Color.bloomBlueTextBackground,
                     fontSize: "12px",
                     fontWeight: "normal",
                     padding: "10px",
@@ -104,14 +77,14 @@ export const lightTheme = createTheme({
                     },
                 },
                 arrow: {
-                    color: kBloomBlueTextBackground,
+                    color: Color.bloomBlueTextBackground,
                 },
             },
         },
         MuiDialogTitle: {
             styleOverrides: {
                 root: {
-                    backgroundColor: kDialogTopBottomGray,
+                    backgroundColor: Color.dialogTopBottomGray,
                     "& h6": { fontWeight: "bold" },
                 },
             },
@@ -119,7 +92,7 @@ export const lightTheme = createTheme({
         MuiDialogActions: {
             styleOverrides: {
                 root: {
-                    backgroundColor: kDialogTopBottomGray,
+                    backgroundColor: Color.dialogTopBottomGray,
                 },
             },
         },
@@ -127,7 +100,7 @@ export const lightTheme = createTheme({
             styleOverrides: {
                 root: {
                     // for some reason,  in Material-UI 4.0 without this, we instead get unchecked boxes having the color of secondary text!!!!
-                    color: kBloomBlue,
+                    color: Color.bloomBlue,
                     // In Material-UI 4.0, these just FLAT OUT DON'T WORK, despite the documentation, which I read to say that, if we didn't
                     // specify a `color` above, would then let us specify the color you get for primary and secondary. See https://github.com/mui-org/material-ui/issues/13895
                     colorPrimary: "green", //kBloomBlue,
@@ -142,11 +115,11 @@ export const lightTheme = createTheme({
 export const darkTheme = createTheme(lightTheme, {
     palette: {
         background: {
-            default: kBloomGray,
+            default: Color.primaryDark,
         },
         text: {
             // the only place I *know* this is currently used is the refresh button in the BloomPub publish preview panel
-            secondary: kGreyOnDarkColor,
+            secondary: Color.greyOnDarkColor,
         },
     },
 });

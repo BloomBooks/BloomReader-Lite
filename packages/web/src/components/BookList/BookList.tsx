@@ -23,9 +23,9 @@ const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
 
 // TODO: This class needs to be renamed.
 export const BookList: FunctionComponent = () => {
-    const [selectedItem, setSelectedItem] = useState<BookOrShelf | undefined>(
-        undefined
-    );
+    const [selectedItem /*, setSelectedItem*/] = useState<
+        BookOrShelf | undefined
+    >(undefined);
     // const theme = useTheme();
 
     const [bookCollection, setBookCollection] = useState<BookCollection>(
@@ -38,13 +38,13 @@ export const BookList: FunctionComponent = () => {
 
     // const bloomContext = React.useContext(BloomContext);
 
-    const selectItem = (item: BookOrShelf) => {
-        setSelectedItem(item);
-    };
+    // const selectItem = (item: BookOrShelf) => {
+    //     setSelectedItem(item);
+    // };
 
-    const clearSelectedItem = () => {
-        setSelectedItem(undefined);
-    };
+    // const clearSelectedItem = () => {
+    //     setSelectedItem(undefined);
+    // };
 
     // React.useEffect(() => {
     //     const syncCollectionAsync = async () => {
