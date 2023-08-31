@@ -17,6 +17,7 @@
             "bundleIdentifier": "org.sil.bloomreaderlite"
         },
         "android": {
+            "package": "org.sil.bloomreaderlite"
             // "adaptiveIcon": {
             //     "foregroundImage": "./assets/adaptive-icon.png",
             //     "backgroundColor": "#ffffff"
