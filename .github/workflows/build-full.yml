@@ -1,0 +1,78 @@
+name: build-full
+on: workflow_dispatch
+
+jobs:
+    build-full-job:
+        name: Build application binaries
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check for EXPO_TOKEN
+              run: |
+                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+                    echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+                    exit 1
+                  fi
+
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.14.*
+                  # ENHANCE: Not sure why caching errors out. It can't ever seem to find the path, no matter what I tried.
+                  cache: yarn
+                  cache-dependency-path: "**/yarn.lock"
+
+            - name: 1) [shared] Install dependencies
+              run: yarn --frozen-lockfile
+              working-directory: packages/shared/
+
+            - name: 1) [shared] Build
+              run: yarn build
+              working-directory: packages/shared/
+
+            # This gave an answer of 135,210 bytes.
+            # That's pretty close? I'm expecting 138,443
+            - name: Print Yarn Lock Size
+              run: |
+                  yarn_lock_size=$(stat -c %s yarn.lock)
+                  echo "Size of yarn.lock: $yarn_lock_size bytes"
+              working-directory: packages/web/
+
+            - name: 2) [web] Install dependencies
+              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
+              run: yarn
+              working-directory: packages/web/
+
+            - name: 2) [web] Build
+              run: yarn build
+              working-directory: packages/web/
+
+            - name: 3A) [mobile] Install dependencies
+              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
+              run: yarn
+              working-directory: packages/mobile/
+
+            - name: 3A) [mobile] Setup EAS
+              uses: expo/expo-github-action@v8
+              with:
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
+
+            - name: 3A) [mobile] EAS Cloud Build
+              run: eas build --platform all --profile production --non-interactive --no-wait
+              working-directory: packages/mobile/
+
+            # - name: 3B) [electron] Install dependencies
+            #   run: yarn --frozen-lockfile
+            #   working-directory: ./packages/electron
+
+            # - name: 3B) [electron] Build
+            #   run: yarn build
+            #   working-directory: ./packages/electron
+
+            - name: 3B) [electron] Temporary Placeholder
+              run: echo "nothing to do"
+              working-directory: ./packages/electron
