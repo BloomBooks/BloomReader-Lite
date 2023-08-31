@@ -1,7 +1,16 @@
-name: build-full
+name: Cloud Build
 on:
     workflow_dispatch:
         inputs:
+            platform:
+                type: choice
+                description: "Which mobile platforms to build"
+                required: true
+                default: "all"
+                options:
+                    - android
+                    - ios
+                    - all
             releaseStage:
                 type: choice
                 description: "type of release"
@@ -79,8 +88,7 @@ jobs:
 
             # IF interested in trying local build: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
             - name: 3A) [mobile] EAS Cloud Build
-              # run: eas build --platform all --profile  ${{ github.event.inputs.releaseStage }} --non-interactive --no-wait
-              run: eas build --platform android --profile  ${{ github.event.inputs.releaseStage }} --non-interactive --no-wait
+              run: eas build --platform  ${{ github.event.inputs.platform }} --profile  ${{ github.event.inputs.releaseStage }} --non-interactive --no-wait
               working-directory: packages/mobile/
 
             # - name: 3B) [electron] Install dependencies
