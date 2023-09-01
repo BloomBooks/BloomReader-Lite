@@ -1,4 +1,4 @@
-name: Cloud Build
+name: Local Build
 on:
     workflow_dispatch:
         inputs:
@@ -22,9 +22,10 @@ on:
                     - release
 
 jobs:
-    build-full-job:
+    build-local-job:
         name: Build application binaries
         runs-on: ubuntu-latest
+        #runs-on: macos-latest
 
         steps:
             - name: Check for EXPO_TOKEN
@@ -86,11 +87,16 @@ jobs:
                   echo "Folder structure:"
                   tree -L 5 --dirsfirst
 
-            # IF interested in trying local build: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
+            # Inspired by: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
             - name: 3A) [mobile] EAS Cloud Build
               run: eas build --platform  ${{ github.event.inputs.platform }} --profile  ${{ github.event.inputs.releaseStage }} --non-interactive --no-wait
               working-directory: packages/mobile/
 
+            - name: Print Folder Structure
+              run: |
+                  echo "Folder structure:"
+                  tree -L 4 --dirsfirst
+            # TODO: Upload artifact if successful
             # - name: 3B) [electron] Install dependencies
             #   run: yarn --frozen-lockfile
             #   working-directory: ./packages/electron
