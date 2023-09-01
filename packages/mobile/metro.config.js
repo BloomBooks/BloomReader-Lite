@@ -24,5 +24,6 @@ if (!config.watchFolders) {
 // This is necessary for local packages (yarn add link, yarn link) or EXTERNAL tsconfig.json path aliases to work
 // Regarding local packages, this is partially inspired by https://medium.com/@alielmajdaoui/linking-local-packages-in-react-native-the-right-way-2ac6587dcfa2
 config.watchFolders.push(path.resolve(__dirname + "/../shared/dist"));
+config.watchFolders.push(path.resolve(__dirname + "/../web"));
 
 module.exports = config;
