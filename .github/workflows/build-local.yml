@@ -23,7 +23,7 @@ on:
 
 jobs:
     build-local-job:
-        name: Build application binaries
+        name: Build application binaries locally
         runs-on: ubuntu-latest
         #runs-on: macos-latest
 
@@ -88,8 +88,8 @@ jobs:
                   tree -L 5 --dirsfirst
 
             # Inspired by: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
-            - name: 3A) [mobile] EAS Cloud Build
-              run: eas build --platform  ${{ github.event.inputs.platform }} --profile  ${{ github.event.inputs.releaseStage }} --non-interactive --no-wait
+            - name: 3A) [mobile] EAS Local Build
+              run: eas build --local --platform  ${{ github.event.inputs.platform }} --profile  ${{ github.event.inputs.releaseStage }} --non-interactive
               working-directory: packages/mobile/
 
             - name: Print Folder Structure
