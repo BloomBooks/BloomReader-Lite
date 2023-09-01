@@ -110,10 +110,10 @@ jobs:
               run: |
                   if [ -f "assets/web-dist/index.html" ] || [ -e "assets/web-dist/index.html" ]; then
                       echo "File exists"
-                      echo "::set-output name=file_exists::true"
+                      echo "file_exists=true" >> $GITHUB_OUTPUT
                   else
                       echo "File does not exist"
-                      echo "::set-output name=file_exists::false"
+                      echo "file_exists=false" >> $GITHUB_OUTPUT
                   fi
 
             - name: 3) [${{ matrix.platform }}] Fail if webapp didn't get copied
