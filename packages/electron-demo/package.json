@@ -6,6 +6,7 @@
     "license": "MIT",
     "main": "./dist/electron/main.js",
     "homepage": "https://bloomlibrary.org",
+    "repository": "https://github.com/BloomBooks/BloomReader-Lite",
     "scripts": {
         "build": "node .electron-react/build.js && electron-builder",
         "build:clean": "cross-env BUILD_TARGET=clean node .electron-react/build.js",
