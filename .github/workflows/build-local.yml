@@ -39,7 +39,7 @@ jobs:
                   cache: yarn
                   cache-dependency-path: "**/yarn.lock"
 
-            - name: 1) [shared] Install dependencies
+            - name: 1) [shared] yarn install
               run: yarn --frozen-lockfile
               working-directory: packages/shared/
 
@@ -62,7 +62,7 @@ jobs:
                   echo "Size of yarn.lock: $yarn_lock_size bytes"
               working-directory: packages/web/
 
-            - name: 2) [web] Install dependencies
+            - name: 2) [web] yarn install
               # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
               run: yarn
               working-directory: packages/web/
@@ -167,9 +167,20 @@ jobs:
                   path: packages/mobile/build-*
 
     build-electron:
-        name: electron binaries
+        name: electron (${{ matrix.platform }}) binaries
         needs: build-dependencies
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                platform: [win, mac, unix]
+                #platform: [win, unix]
+                include:
+                    - os: windows-latest
+                      platform: win
+                    #- os: macos-latest
+                    #  platform: mac
+                    - os: ubuntu-latest
+                      platform: unix
         defaults:
             run:
                 working-directory: packages/electron-demo
@@ -197,7 +208,7 @@ jobs:
                   name: web-package
                   path: packages/web/
 
-            - name: 3) [electron] Install dependencies
+            - name: 3) [electron] yarn install
               run: yarn
 
             - name: 3) [electron] Build
@@ -206,7 +217,7 @@ jobs:
             - name: 3) [electron] Upload binary
               uses: actions/upload-artifact@v3
               with:
-                  name: BloomReaderLite-electron-${{ inputs.releaseChannel }}
+                  name: BloomReaderLite-electron-${{ matrix.platform }}-${{ inputs.releaseChannel }}
                   path: packages/electron-demo/output/*
 
     cleanup:
