@@ -13,9 +13,9 @@ const destinationFolderPath = "../mobile/assets/web-dist";
 const filesToNotCopy: string[] = [];
 
 console.time(logPrefix);
-console.log(
-    `${logPrefix}: Copying files from ${sourceFolderPath} to ${destinationFolderPath}/`
-);
+// console.log(
+//     `${logPrefix}: Copying files from ${sourceFolderPath} to ${destinationFolderPath}/`
+// );
 
 const sourceFiles = getAllFilePaths(sourceFolderPath);
 
@@ -66,10 +66,10 @@ sourceFilesToCopy.forEach((filePath) => {
         assetBasenames.set(basenameCaseInsensitive, fileInfo);
     }
 
-    const src = fromFilePath;
-    const dest = `${destinationFolderPath}/${toFilename}`;
+    // const src = fromFilePath;
+    // const dest = `${destinationFolderPath}/${toFilename}`;
 
-    copyFileSafe(src, dest, { verbose: true });
+    // copyFileSafe(src, dest, { verbose: true });
 });
 
 // Given a folder that may have subfolders, gets the paths to all the files (but none of the directories)
@@ -185,17 +185,17 @@ await cleanupOutdatedFilesAsync();
 function mkdirSafe(path: fs.PathLike) {
     if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true });
 }
-function copyFileSafe(
-    src: fs.PathLike,
-    dest: string,
-    options?: { verbose?: boolean }
-) {
-    if (options?.verbose) {
-        console.info({ src, dest });
-    }
-    mkdirSafe(path.dirname(dest));
-    fs.copyFileSync(src, dest);
-}
+// function copyFileSafe(
+//     src: fs.PathLike,
+//     dest: string,
+//     options?: { verbose?: boolean }
+// ) {
+//     if (options?.verbose) {
+//         console.info({ src, dest });
+//     }
+//     mkdirSafe(path.dirname(dest));
+//     fs.copyFileSync(src, dest);
+// }
 function normalizeSeparators(path: string) {
     return path.replace(/\\/g, "/");
 }
