@@ -1,0 +1,14 @@
+name: Build (Automatic)
+on:
+    push:
+        branches:
+            - master
+            - beta
+            - release
+
+jobs:
+    build:
+        uses: ./.github/workflows/build-local.yml
+        secrets: inherit
+        with:
+            releaseChannel: ${{ github.ref == 'refs/heads/release' &&  'release' || (github.ref == 'refs/heads/beta' &&  'beta' ||  'alpha' )  }}

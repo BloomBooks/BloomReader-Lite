@@ -1,4 +1,8 @@
-name: Cloud Build
+# You can use this to manually trigger a cloud build on Expo EAS
+# However, Expo EAS builds have a limited quota, whereas we don't have a limit when running on Github actions.
+# Since getting it to run on Github actions didn't end up being too hard, there's not too much point
+# to this workflow anymore
+name: Cloud Build (Deprecated)
 on:
     workflow_dispatch:
         inputs:
@@ -41,7 +45,6 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16.14.*
-                  # ENHANCE: Not sure why caching errors out. It can't ever seem to find the path, no matter what I tried.
                   cache: yarn
                   cache-dependency-path: "**/yarn.lock"
 
@@ -52,14 +55,6 @@ jobs:
             - name: 1) [shared] Build
               run: yarn build
               working-directory: packages/shared/
-
-            # This gave an answer of 135,210 bytes.
-            # That's pretty close? I'm expecting 138,443
-            - name: Print Yarn Lock Size
-              run: |
-                  yarn_lock_size=$(stat -c %s yarn.lock)
-                  echo "Size of yarn.lock: $yarn_lock_size bytes"
-              working-directory: packages/web/
 
             - name: 2) [web] Install dependencies
               # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
@@ -80,11 +75,6 @@ jobs:
               with:
                   eas-version: latest
                   token: ${{ secrets.EXPO_TOKEN }}
-
-            - name: Print Folder Structure
-              run: |
-                  echo "Folder structure:"
-                  tree -L 5 --dirsfirst
 
             # IF interested in trying local build: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
             - name: 3A) [mobile] EAS Cloud Build

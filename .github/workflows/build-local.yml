@@ -2,16 +2,7 @@ name: Local Build
 on:
     workflow_dispatch:
         inputs:
-            platform:
-                type: choice
-                description: "Which mobile platforms to build"
-                required: true
-                default: "all"
-                options:
-                    - android
-                    - ios
-                    - all
-            releaseStage:
+            releaseChannel:
                 type: choice
                 description: "type of release"
                 required: true
@@ -20,13 +11,16 @@ on:
                     - alpha
                     - beta
                     - release
+    workflow_call:
+        inputs:
+            releaseChannel:
+                type: string
+                required: true
 
 jobs:
-    build-local-job:
-        name: Build application binaries locally
+    build-dependencies:
+        name: dependencies
         runs-on: ubuntu-latest
-        #runs-on: macos-latest
-
         steps:
             - name: Check for EXPO_TOKEN
               run: |
@@ -42,7 +36,6 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16.14.*
-                  # ENHANCE: Not sure why caching errors out. It can't ever seem to find the path, no matter what I tried.
                   cache: yarn
                   cache-dependency-path: "**/yarn.lock"
 
@@ -54,9 +47,16 @@ jobs:
               run: yarn build
               working-directory: packages/shared/
 
+            # Need to upload it so that the subsequent jobs can access it
+            - name: 1) [shared] Upload build
+              uses: actions/upload-artifact@v3
+              with:
+                  name: shared-dist
+                  path: packages/shared/dist
+
             # This gave an answer of 135,210 bytes.
             # That's pretty close? I'm expecting 138,443
-            - name: Print Yarn Lock Size
+            - name: Debugging - Print Yarn Lock Size (Before)
               run: |
                   yarn_lock_size=$(stat -c %s yarn.lock)
                   echo "Size of yarn.lock: $yarn_lock_size bytes"
@@ -67,44 +67,134 @@ jobs:
               run: yarn
               working-directory: packages/web/
 
+            - name: Debugging - Print Yarn Lock Size (After)
+              run: |
+                  yarn_lock_size=$(stat -c %s yarn.lock)
+                  echo "Size of yarn.lock: $yarn_lock_size bytes"
+              working-directory: packages/web/
+
             - name: 2) [web] Build
               run: yarn build
               working-directory: packages/web/
 
-            - name: 3A) [mobile] Install dependencies
+            # Need to upload it so that the subsequent jobs can access it
+            - name: 2) [web] Upload build
+              uses: actions/upload-artifact@v3
+              with:
+                  name: web-dist
+                  path: packages/web/dist
+
+    build-mobile:
+        name: ${{ matrix.platform }} binaries
+        needs: build-dependencies
+        runs-on: ${{ matrix.os }}
+        defaults:
+            run:
+                working-directory: packages/mobile
+
+        strategy:
+            matrix:
+                platform: [android, ios]
+                include:
+                    - os: ubuntu-latest
+                      platform: android
+                    - os: macos-latest
+                      platform: ios
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.14.*
+                  cache: yarn
+                  cache-dependency-path: "**/yarn.lock"
+
+            - name: 1) [shared] Download dist folder artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: shared-dist
+                  path: packages/shared/dist
+
+            - name: 2) [web] Download dist folder artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: web-dist
+                  path: packages/web/dist
+
+            - name: 3) [${{ matrix.platform }}] Install dependencies
               # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
               run: yarn
-              working-directory: packages/mobile/
 
-            - name: 3A) [mobile] Setup EAS
+            - name: 3) [${{ matrix.platform }}] Setup EAS
               uses: expo/expo-github-action@v8
               with:
                   eas-version: latest
                   token: ${{ secrets.EXPO_TOKEN }}
 
-            - name: Print Folder Structure
-              run: |
-                  echo "Folder structure:"
-                  tree -L 5 --dirsfirst
-
             # Inspired by: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
-            - name: 3A) [mobile] EAS Local Build
-              run: eas build --local --platform  ${{ github.event.inputs.platform }} --profile  ${{ github.event.inputs.releaseStage }} --non-interactive
-              working-directory: packages/mobile/
+            - name: 3) [${{ matrix.platform }}] EAS Local Build
+              run: eas build --local --platform ${{ matrix.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive
 
-            - name: Print Folder Structure
-              run: |
-                  echo "Folder structure:"
-                  tree -L 4 --dirsfirst
-            # TODO: Upload artifact if successful
-            # - name: 3B) [electron] Install dependencies
-            #   run: yarn --frozen-lockfile
-            #   working-directory: ./packages/electron
+            - name: 3) [${{ matrix.platform }}] Upload binary
+              uses: actions/upload-artifact@v3
+              with:
+                  name: BloomReaderLite-${{ matrix.platform }}-${{ inputs.releaseChannel }}
+                  path: packages/mobile/build-*
 
-            # - name: 3B) [electron] Build
-            #   run: yarn build
-            #   working-directory: ./packages/electron
+    build-electron:
+        name: electron binaries
+        needs: build-dependencies
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: packages/electron-demo
 
-            - name: 3B) [electron] Temporary Placeholder
-              run: echo "nothing to do"
-              working-directory: ./packages/electron
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.14.*
+                  cache: yarn
+                  cache-dependency-path: "packages/electron-demo/yarn.lock"
+
+            - name: 1) [shared] Download dist folder artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: shared-dist
+                  path: packages/shared/dist
+
+            - name: 2) [web] Download dist folder artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: web-dist
+                  path: packages/web/dist
+
+            - name: 3) [electron] Install dependencies
+              run: yarn
+
+            - name: 3) [electron] Build
+              run: yarn build
+
+            - name: 3) [electron] Upload binary
+              uses: actions/upload-artifact@v3
+              with:
+                  name: BloomReaderLite-electron-${{ inputs.releaseChannel }}
+                  path: packages/electron-demo/output/*
+
+    cleanup:
+        name: Cleanup
+        if: always() # Run even if previous jobs failed or cancelled
+        needs: [build-mobile, build-electron]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Delete temporary artifacts
+              uses: geekyeggo/delete-artifact@v2
+              with:
+                  name: |
+                      shared-dist
+                      web-dist

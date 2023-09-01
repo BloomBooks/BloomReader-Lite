@@ -15,7 +15,8 @@ const rendererConfig = require("./webpack.renderer.config");
 const doneLog = chalk.bgGreen.white(" DONE ") + " ";
 const errorLog = chalk.bgRed.white(" ERROR ") + " ";
 const okayLog = chalk.bgBlue.white(" OKAY ") + " ";
-const isCI = process.env.CI || false;
+// const isCI = process.env.CI || false;
+const isCI = false;
 
 if (process.env.BUILD_TARGET === "clean") clean();
 else if (process.env.BUILD_TARGET === "web") web();
