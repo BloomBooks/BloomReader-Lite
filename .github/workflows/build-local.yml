@@ -144,10 +144,10 @@ jobs:
         strategy:
             matrix:
                 #platform: [win, mac, unix]
-                platform: [win, unix]
+                platform: [unix]
                 include:
-                    - os: windows-latest
-                      platform: win
+                    # - os: windows-latest
+                    #   platform: win
                     #- os: macos-latest
                     #  platform: mac
                     - os: ubuntu-latest
