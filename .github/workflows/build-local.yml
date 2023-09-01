@@ -83,8 +83,10 @@ jobs:
             - name: 2) [web] Upload build
               uses: actions/upload-artifact@v3
               with:
-                  name: web-dist
-                  path: packages/web/dist
+                  name: web-package
+                  path: |
+                      packages/web/dist
+                      packages/web/output
 
     build-mobile:
         name: ${{ matrix.platform }} binaries
@@ -122,11 +124,11 @@ jobs:
             - name: 2) [web] Download dist folder artifact
               uses: actions/download-artifact@v3
               with:
-                  name: web-dist
-                  path: packages/web/dist
+                  name: web-package
+                  path: packages/web/
 
-            - name: 3) [${{ matrix.platform }}] Install dependencies
-              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
+            - name: 3) [${{ matrix.platform }}] yarn install
+              # run: yarn --frozen-lockfile # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
               run: yarn
 
             - name: 3) [${{ matrix.platform }}] Check for compile errors
@@ -192,8 +194,8 @@ jobs:
             - name: 2) [web] Download dist folder artifact
               uses: actions/download-artifact@v3
               with:
-                  name: web-dist
-                  path: packages/web/dist
+                  name: web-package
+                  path: packages/web/
 
             - name: 3) [electron] Install dependencies
               run: yarn
