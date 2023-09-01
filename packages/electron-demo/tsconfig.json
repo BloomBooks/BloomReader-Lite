@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
+    "types": [
+      /*"@emotion/react",
+      "@emotion/react/types/css-prop"*/
+    ],
+    "lib": [
+      "dom",
+      "es6",
+      "scripthost",
+      "es2017.object"
+    ],
+    "experimentalDecorators": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "paths": {
+    "react": [
+      "./node_modules/@types/react"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "typings",
+  ]
+}
