@@ -58,6 +58,7 @@ jobs:
 
     build-mobile:
         name: ${{ matrix.platform }} binaries
+        if: ${{ always() }}
         needs: build-dependencies
         runs-on: ${{ matrix.os }}
         defaults:
@@ -121,6 +122,23 @@ jobs:
               run: |
                   echo "The file does not exist at assets/web-dist/index.html"
                   exit 1
+
+            #- name: Debugging node_modules/bloom-reader-lite-web
+            #  run: ls -laR node_modules/bloom-reader-lite-web/node_modules/uuid
+
+            #- name: Debugging [web] package
+            #  run: ls -laR ../web/
+
+            # It is a symlink, no surprise there.
+            # - name: Check if symlink
+            #   run: |
+            #       packagePath="node_modules/bloom-reader-lite-web"
+            #       if [ -L "$packagePath" ]; then
+            #         echo "$packagePath is a symlink."
+            #       else
+            #         echo "$packagePath is not a symlink."
+            #         exit 1
+            #       fi
 
             - name: 3) [${{ matrix.platform }}] Setup EAS
               uses: expo/expo-github-action@v8

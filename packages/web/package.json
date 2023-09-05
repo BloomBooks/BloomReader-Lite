@@ -4,13 +4,11 @@
     "license": "MIT",
     "scripts": {
         "dev": "vite",
-        "build": "tsc && vite build && yarn copy-dist",
-        "watch": "npm-run-all --parallel watchCode watchDist",
+        "build": "tsc && vite build",
+        "watch": "npm-run-all --parallel watchCode",
         "watchCode": "vite build --watch --minify false",
-        "watchDist": "chokidar \"dist/**/*\" -c \"yarn copy-dist\" --debounce 1000",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
-        "copy-dist": "ts-node --esm scripts/copyWebDist.mts",
         "postinstallComments": "// Runs automatically after running 'yarn' or 'yarn install'",
         "postinstall": "ts-node --esm ./scripts/postinstall.mts"
     },
@@ -33,7 +31,6 @@
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
         "@vitejs/plugin-react": "^4.0.3",
-        "chokidar-cli": "^3.0.0",
         "eslint": "^8.45.0",
         "eslint-plugin-react": "^7.33.2",
         "eslint-plugin-react-hooks": "^4.6.0",
