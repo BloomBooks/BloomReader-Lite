@@ -22,34 +22,35 @@ export default async function startupTasks(): Promise<void> {
 }
 
 async function loadWebBundleAsync() {
-    copyAssetsToFolder(Locations.WebRootFolder, webBundleAssets);
+    await copyAssetsToFolderAsync(Locations.WebRootFolder, webBundleAssets);
 }
 
 async function loadBloomPlayerAsync() {
-    copyAssetsToFolder(
+    await copyAssetsToFolderAsync(
         Path.join(Locations.WebRootFolder, "bloom-player"),
         bloomPlayerAssets
     );
 }
 
-async function copyAssetsToFolder(destFolder: string, assets: Asset[]) {
+async function copyAssetsToFolderAsync(destFolder: string, assets: Asset[]) {
     // Clearing the folder is optional in production,
     // but useful in development to ensure we're starting from a clean folder.
     await FileSystem.deleteAsync(destFolder, {
         idempotent: true,
     });
     await ensureFolderAsync(destFolder);
-    const copyPromises = assets.map((asset) => {
+    const copyPromises = assets.map(async (asset) => {
         // Precondition: Right now we assume that the assets are all in a single flat folder
         // with no subfolders. This assumption simplifies the code here.
         const extension = asset.type === "jsAsset" ? "js" : asset.type;
         const destination = `${destFolder}/${asset.name}.${extension}`;
-        console.log({ destination });
 
-        return copyAssetAsync({
+        await copyAssetAsync({
             asset,
             to: destination,
         });
+
+        console.log({ finishedCopying: destination });
     });
 
     // ENHANCE: catch if Promise.all rejects.
