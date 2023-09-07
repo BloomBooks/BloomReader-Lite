@@ -8,7 +8,9 @@ import {
     emptyBookCollection,
 } from "bloom-reader-lite-shared/dist/models/BookCollection";
 import {
+    Book,
     BookOrShelf,
+    Shelf,
     isShelf,
     sortedListForShelf,
 } from "bloom-reader-lite-shared/dist/models/BookOrShelf";
@@ -23,9 +25,9 @@ const BLOOM_PLAYER_PATH = `./bloom-player/bloomplayer.htm`;
 
 // TODO: This class needs to be renamed.
 export const BookList: FunctionComponent = () => {
-    const [selectedItem /*, setSelectedItem*/] = useState<
-        BookOrShelf | undefined
-    >(undefined);
+    const [selectedItem, setSelectedItem] = useState<BookOrShelf | undefined>(
+        undefined
+    );
     // const theme = useTheme();
 
     const [bookCollection, setBookCollection] = useState<BookCollection>(
@@ -42,9 +44,9 @@ export const BookList: FunctionComponent = () => {
     //     setSelectedItem(item);
     // };
 
-    // const clearSelectedItem = () => {
-    //     setSelectedItem(undefined);
-    // };
+    const clearSelectedItem = () => {
+        setSelectedItem(undefined);
+    };
 
     // React.useEffect(() => {
     //     const syncCollectionAsync = async () => {
@@ -76,21 +78,39 @@ export const BookList: FunctionComponent = () => {
     //     }
     // };
 
-    // const itemTouch = (item: BookOrShelf) => {
-    //     if (selectedItem) clearSelectedItem();
-    //     else isShelf(item) ? openShelf(item) : openBook(item);
-    // };
+    const itemTouch = (item: BookOrShelf) => {
+        if (selectedItem) clearSelectedItem();
+        else isShelf(item) ? openShelf(item) : openBook(item);
+    };
 
-    // const openBook = (book: Book) =>
-    //     navigation.navigate("BookReader", {
-    //         bookUrl: book.filepath,
-    //     });
+    const openBook = async (book: Book) => {
+        // navigation.navigate("BookReader", {
+        //     bookUrl: book.filepath,
+        // });
 
-    // const openShelf = (shelf: Shelf) => {
-    //     navigation.push("BookList", {
-    //         shelf: shelf,
-    //     });
-    // };
+        const request: UnpackZipFileRequestBase = {
+            messageType: "unpack-zip-file",
+            zipFilePath: book.filepath,
+        };
+        const response = await window.bloomReaderLite.api.requestAsync(request);
+
+        if (response.messageType !== "unpack-zip-file-response") {
+            return;
+        } else if (!response.success) {
+            // TODO: Inform the user that extracting the book failed and tell them what to try next.
+            return;
+        }
+
+        onBookUnpacked(response.indexPath);
+    };
+
+    const openShelf = (shelf: Shelf) => {
+        console.log("Got shelf: " + shelf);
+        throw new Error("Not implemented");
+        // navigation.push("BookList", {
+        //     shelf: shelf,
+        // });
+    };
 
     // React.useEffect(() => {
     //     if (selectedItem) {
@@ -237,31 +257,15 @@ export const BookList: FunctionComponent = () => {
 
         const readUri = `${BLOOM_PLAYER_PATH}?${queryParamsString}`;
         console.info("Read uri: " + readUri);
+
+        window.location.href = readUri;
     }, []);
 
     const booksJsx = list.map((item) => {
         return (
             <div
                 key={item.filepath}
-                onClick={async () => {
-                    // TODO: Generate zipFilePath programmatically
-                    const request: UnpackZipFileRequestBase = {
-                        messageType: "unpack-zip-file",
-                        zipFilePath:
-                            "file:///var/mobile/Containers/Data/Application/4982CF6E-DB2F-4B6C-B6A6-D71B67B24DE2/Documents/Books/The_Moon_and_the_Cap.bloompub",
-                    };
-                    const response =
-                        await window.bloomReaderLite.api.requestAsync(request);
-
-                    if (response.messageType !== "unpack-zip-file-response") {
-                        return;
-                    } else if (!response.success) {
-                        // TODO: Inform the user that extracting the book failed and tell them what to try next.
-                        return;
-                    }
-
-                    onBookUnpacked(response.indexPath);
-                }}
+                onClick={() => itemTouch(item)}
                 // onContextMenu={(e) => {
                 //     //     // TODO: Figure out longpress instead
                 //     //   e.preventDefault(); // Prevent default context menu
