@@ -1,7 +1,7 @@
 import { Asset } from "expo-asset";
 import { Locations } from "../constants/Locations";
 import { importBookToCollection } from "../models/BookCollection";
-import { copyAssetAsync } from "../util/FileUtil";
+import { copyAssetAsync, ensureFolderAsync } from "../util/FileUtil";
 
 // NOTE: These asset names must not contain any URI special characters (Space is a special character)
 const modules = [require("../../assets/books/The_Moon_and_the_Cap.bloompub")];
@@ -10,6 +10,8 @@ export const sampleBookAssets = modules.map((module) => {
 });
 
 export async function importSampleBooks() {
+    await ensureFolderAsync(Locations.BooksFolder);
+
     const debugging: string[] = [];
     for (let i = 0; i < sampleBookAssets.length; ++i) {
         const asset = sampleBookAssets[i];
