@@ -28,3 +28,6 @@ How packages/mobile consumes packages/web
     It would error out during the "eas build" part with a yarn install error, saying it couldn't find the uuid folder in web's node_modules. I think that's because the [web] package is symlinked.
     (Weird aside: "eas build" somehow runs "yarn install" as a substep I guess, but that's weird. "yarn install" is already run on the Github runner. (1) It doesn't error out, and (2) why does it need to run it again, and (3) Why is [web] package relevant at all if devDependencies? )
     I tried modifying babel.config.js/metro.config.js and reading/following https://docs.expo.dev/guides/monorepos/#modify-the-metro-config, but I didn't have success yet.
+
+It'd be nice to be able to run multiple variants on the same device.
+Follow the instructions here: https://docs.expo.dev/build-reference/variants/

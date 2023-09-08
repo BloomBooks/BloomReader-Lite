@@ -6,7 +6,6 @@ interface HomeProps {
 }
 
 export const Home: FunctionComponent<HomeProps> = () => {
-    // TODO: You will need to ask the native layer what books are available somehow.
     return (
         <div>
             <BookList />
