@@ -33,3 +33,8 @@ It'd be nice to be able to run multiple variants on the same device.
 Follow the instructions here: https://docs.expo.dev/build-reference/variants/
 
 If this yarn preinstall works (allows alpha/beta builds to succeed), then you should refactor build-local.yml to cut out the steps that build shared and web.
+Honestly, the yarn install of the mobile app is kinda unnecessary too. I guess what it needs to be able to do is run EAS. The other useful thing is the steps that check if the web-dist folder looks correct and stuff.
+
+Write up how to use Diawi to upload iOS builds in lieu of EAS Cloud.
+Optional - you could programmatically upload builds to Daiwi using https://github.com/marketplace/actions/upload-diawi
+so that you won't have to do it manually.
