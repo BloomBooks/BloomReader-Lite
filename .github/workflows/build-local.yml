@@ -8,6 +8,7 @@ on:
                 required: true
                 default: "alpha"
                 options:
+                    - developer
                     - alpha
                     - beta
                     - release

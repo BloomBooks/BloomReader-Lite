@@ -5,13 +5,18 @@
         "promptToConfigurePushNotifications": false
     },
     "build": {
-        "alpha": {
+        "developer": {
             "developmentClient": true,
             "distribution": "internal",
             "channel": "alpha"
         },
-        "beta": {
+        "alpha": {
+            // Intended for "internal distribution" (iOS) or "internal test" (Android)
             "distribution": "internal",
+            "channel": "alpha"
+        },
+        "beta": {
+            // Intended for "TestFlight" (iOS) or "Open test" (Android)  (or "Closed test" is probably fine too)
             "channel": "beta"
         },
         "release": {
