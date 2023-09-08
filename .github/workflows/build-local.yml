@@ -19,48 +19,9 @@ on:
                 required: true
 
 jobs:
-    build-dependencies:
-        name: dependencies
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check for EXPO_TOKEN
-              run: |
-                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-                    echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-                    exit 1
-                  fi
-
-            - name: Checkout repository
-              uses: actions/checkout@v3
-
-            - name: Setup Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 16.14.*
-                  cache: yarn
-                  cache-dependency-path: "**/yarn.lock"
-
-            - name: 1) [shared] yarn install
-              run: yarn --frozen-lockfile
-              working-directory: packages/shared/
-
-            - name: 1) [shared] Build
-              run: yarn build
-              working-directory: packages/shared/
-
-            # Need to upload it so that the subsequent jobs can access it
-            - name: 1) [shared] Upload build
-              uses: actions/upload-artifact@v3
-              with:
-                  name: shared-dist
-                  # note: if [shared] had anything noteworthy in its dependencies (which affects node_modules),
-                  # you'd either need to upload node_modules too or else just run the build on each runner
-                  path: packages/shared/dist
-
     build-mobile:
         name: ${{ matrix.platform }} binaries
         if: ${{ always() }}
-        needs: build-dependencies
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -74,7 +35,16 @@ jobs:
                       platform: android
                     - os: macos-latest
                       platform: ios
+            fail-fast: false
         steps:
+            - name: Check for EXPO_TOKEN
+              run: |
+                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+                    echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+                    exit 1
+                  fi
+              working-directory: ./
+
             - name: Checkout repository
               uses: actions/checkout@v3
 
@@ -85,29 +55,14 @@ jobs:
                   cache: yarn
                   cache-dependency-path: "**/yarn.lock"
 
-            - name: 1) [shared] Download dist folder artifact
-              uses: actions/download-artifact@v3
-              with:
-                  name: shared-dist
-                  path: packages/shared/dist
-
-            - name: 2) [web] yarn install
-              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
-              run: yarn
-              working-directory: packages/web/
-
-            - name: 2) [web] Build
-              run: yarn build
-              working-directory: packages/web/
-
-            - name: 3) [${{ matrix.platform }}] yarn install
+            - name: "[${{ matrix.platform }}] yarn install"
               # run: yarn --frozen-lockfile # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
               run: yarn
 
-            - name: 3) [${{ matrix.platform }}] Check for compile errors
+            - name: "[${{ matrix.platform }}] Check for compile errors"
               run: yarn tsc
 
-            - name: 3) [${{ matrix.platform }}] Check if webapp was copied
+            - name: "[${{ matrix.platform }}] Check if webapp was copied"
               id: check-webapp-copied
               run: |
                   if [ -f "assets/web-dist/index.html" ] || [ -e "assets/web-dist/index.html" ]; then
@@ -118,39 +73,22 @@ jobs:
                       echo "file_exists=false" >> $GITHUB_OUTPUT
                   fi
 
-            - name: 3) [${{ matrix.platform }}] Fail if webapp didn't get copied
+            - name: "[${{ matrix.platform }}] Fail if webapp didn't get copied"
               if: steps.check-webapp-copied.outputs.file_exists != 'true'
               run: |
                   echo "The file does not exist at assets/web-dist/index.html"
                   exit 1
 
-            #- name: Debugging node_modules/bloom-reader-lite-web
-            #  run: ls -laR node_modules/bloom-reader-lite-web/node_modules/uuid
-
-            #- name: Debugging [web] package
-            #  run: ls -laR ../web/
-
-            # It is a symlink, no surprise there.
-            # - name: Check if symlink
-            #   run: |
-            #       packagePath="node_modules/bloom-reader-lite-web"
-            #       if [ -L "$packagePath" ]; then
-            #         echo "$packagePath is a symlink."
-            #       else
-            #         echo "$packagePath is not a symlink."
-            #         exit 1
-            #       fi
-
-            - name: 3) [${{ matrix.platform }}] Setup EAS
+            - name: "[${{ matrix.platform }}] Setup EAS"
               uses: expo/expo-github-action@v8
               with:
                   eas-version: latest
                   token: ${{ secrets.EXPO_TOKEN }}
 
-            - name: 3) [${{ matrix.platform }}] EAS Local Build
+            - name: "[${{ matrix.platform }}] EAS Local Build"
               run: eas build --local --platform ${{ matrix.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive
 
-            - name: 3) [${{ matrix.platform }}] Upload binary
+            - name: "[${{ matrix.platform }}] Upload binary"
               uses: actions/upload-artifact@v3
               with:
                   name: BloomReaderLite-${{ matrix.platform }}-${{ inputs.releaseChannel }}
@@ -158,7 +96,6 @@ jobs:
 
     build-electron:
         name: electron (${{ matrix.platform }}) binaries
-        needs: build-dependencies
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
@@ -186,41 +123,14 @@ jobs:
                   cache: yarn
                   cache-dependency-path: "packages/electron-demo/yarn.lock"
 
-            - name: 1) [shared] Download dist folder artifact
-              uses: actions/download-artifact@v3
-              with:
-                  name: shared-dist
-                  path: packages/shared/dist
-
-            - name: 2) [web] yarn install
-              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
-              run: yarn
-              working-directory: packages/web/
-
-            - name: 2) [web] Build
-              run: yarn build
-              working-directory: packages/web/
-
-            - name: 3) [electron] yarn install
+            - name: "[electron] yarn install"
               run: yarn
 
-            - name: 3) [electron] Build
+            - name: "[electron] Build"
               run: yarn build
 
-            - name: 3) [electron] Upload binary
+            - name: "[electron] Upload binary"
               uses: actions/upload-artifact@v3
               with:
-                  name: BloomReaderLite-electron-${{ matrix.platform }}-${{ inputs.releaseChannel }}
+                  name: BloomReaderLite-${{ matrix.platform }}-${{ inputs.releaseChannel }}
                   path: packages/electron-demo/output/*
-
-    cleanup:
-        name: Cleanup
-        if: always() # Run even if previous jobs failed or cancelled
-        needs: [build-mobile, build-electron]
-        runs-on: ubuntu-latest
-        steps:
-            - name: Delete temporary artifacts
-              uses: geekyeggo/delete-artifact@v2
-              with:
-                  name: |
-                      shared-dist
