@@ -8,16 +8,25 @@
         "developer": {
             "developmentClient": true,
             "distribution": "internal",
-            "channel": "alpha"
+            "channel": "developer",
+            "env": {
+                "RELEASE_CHANNEL": "developer"
+            }
         },
         "alpha": {
             // Intended for "internal distribution" (iOS) or "internal test" (Android)
             "distribution": "internal",
-            "channel": "alpha"
+            "channel": "alpha",
+            "env": {
+                "RELEASE_CHANNEL": "alpha"
+            }
         },
         "beta": {
             // Intended for "TestFlight" (iOS) or "Open test" (Android)  (or "Closed test" is probably fine too)
-            "channel": "beta"
+            "channel": "beta",
+            "env": {
+                "RELEASE_CHANNEL": "beta"
+            }
         },
         "release": {
             "channel": "release"

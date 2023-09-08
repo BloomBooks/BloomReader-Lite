@@ -87,6 +87,8 @@ jobs:
 
             - name: "[${{ matrix.platform }}] EAS Local Build"
               run: eas build --local --platform ${{ matrix.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive
+              # If something goes wrong, the following 2 pages are useful guides for understanding the outline of the build process:
+              # https://docs.expo.dev/build-reference/android-builds/ or https://docs.expo.dev/build-reference/ios-builds/
 
             - name: "[${{ matrix.platform }}] Upload binary"
               uses: actions/upload-artifact@v3
