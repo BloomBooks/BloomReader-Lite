@@ -189,7 +189,9 @@ export const WebviewHost: FunctionComponent = (props) => {
                 ref={(ref) => (webviewRef.current = ref)}
                 style={styles.webViewStyles}
                 source={{ uri }}
-                injectedJavaScript={
+                // Note: On Android, the injectedJavscript prop often causes (maybe 95% of the time) an ERR_ACCESS_DENIED error
+                // But the injectedJavaScriptBeforeContentLoaded version doesn't have that problem
+                injectedJavaScriptBeforeContentLoaded={
                     WebviewUtil.JavaScriptInjections.PostMessageWorkaround +
                     WebviewUtil.JavaScriptInjections
                         .PassConsoleLoggingToNative +
