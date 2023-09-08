@@ -31,3 +31,5 @@ How packages/mobile consumes packages/web
 
 It'd be nice to be able to run multiple variants on the same device.
 Follow the instructions here: https://docs.expo.dev/build-reference/variants/
+
+If this yarn preinstall works (allows alpha/beta builds to succeed), then you should refactor build-local.yml to cut out the steps that build shared and web.

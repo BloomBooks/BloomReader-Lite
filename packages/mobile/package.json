@@ -10,6 +10,7 @@
         "web": "expo start --web",
         "build:ios": "yarn && eas build --platform ios --profile development",
         "build:ios:prod": "yarn && eas build --platform ios --profile production",
+        "preinstall": "cd ../shared && yarn && yarn build && cd ../web && yarn && yarn build && cd ../mobile",
         "postinstallComments": "// Runs automatically after running 'yarn' or 'yarn install'",
         "postinstall": "yarn copy:web",
         "copy:web": "ts-node scripts/copyWebDist.ts"
