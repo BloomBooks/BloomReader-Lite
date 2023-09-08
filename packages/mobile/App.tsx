@@ -4,6 +4,7 @@ import {
 } from "@shared/models/BookCollection";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
