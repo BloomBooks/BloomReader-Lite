@@ -60,7 +60,8 @@ jobs:
               run: yarn
 
             - name: "[${{ matrix.platform }}] Check for compile errors"
-              run: yarn tsc
+              # Note: Running "tsc" at the end of "yarn build" is the relevant part here.
+              run: yarn build
 
             - name: "[${{ matrix.platform }}] Check if webapp was copied"
               id: check-webapp-copied
