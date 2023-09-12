@@ -3,8 +3,10 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "build": "yarn clean && tsc",
-        "watch": "yarn clean && tsc --watch",
+        "build": "tsc",
+        "build:clean": "yarn clean && yarn build",
+        "watch": "tsc --watch",
+        "watch:clean": "yarn clean && yarn watch",
         "clean": "rimraf dist"
     },
     "dependencies": {},

@@ -1,11 +1,5 @@
-Hot reloading doesn't seem to work right. When the webapp is changed, the Expo app will hot reload but oftentimes the webview will report an error or a blank screen and you'll have to restart the app (meaning you don't really get hot reload)
-I thought at one point i fixed some state resetting problems and it was working nicely again (temporarily)
-
 Change the status bar color
 AppBar needs some padding - amount TBD
-
-Android builds fail in beta and release - Looks like https://github.com/expo/expo/issues/23265. Does this workaround work? https://github.com/expo/expo/issues/23265#issuecomment-1662709655
-Well, or if you just publish the packages to the NPM repository, that would solve it for the release case. For local builds, you can continue using yarn link, and we have a viable workaround in local development and alpha mode.
 
 packages/mobile's copyWebDist.ts
 

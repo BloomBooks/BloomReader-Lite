@@ -1,4 +1,4 @@
-# @bloom-reader-lite/app
+# @bloom-reader-lite/web
 
 Web-based frontend of BloomReaderLite goes here
 Any native-specific requests should be handled by a backend, which is a separate package.

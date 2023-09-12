@@ -3,6 +3,13 @@
 Expo/React Native driver wrapping @bloom-reader-lite/app goes here
 It should also provide a backend or pseudo-backend to handle native-specific requests.
 
+# Build loop
+
+    yarn
+    yarn start
+
+Any changes you make in [web] or [mobile] should be hot reloaded.
+
 # Development Notes
 
 After updating something in the "shared" package, you often need to manually Restart Typescript Server (use Ctrl+Shift+P in Visual Studio) before it gets the updates, unfortunately. I'm not sure why it has trouble picking it up.
