@@ -14,6 +14,7 @@
         "build:web": "cd ../web && yarn && yarn build && cd ../mobile",
         "build:mobile": "tsc",
         "copy:webDist": "ts-node scripts/copyWebDist.ts",
+        "eas:build:android": "yarn && eas build --platform android --profile developer",
         "eas:build:ios": "yarn && eas build --platform ios --profile developer",
         "eas:build:ios:release": "yarn && eas build --platform ios --profile release",
         "eas-build-post-install": "yarn build:shared && yarn build:web && yarn copy:webDist",

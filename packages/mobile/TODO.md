@@ -29,3 +29,5 @@ Honestly, the yarn install of the mobile app is kinda unnecessary too. I guess w
 Write up how to use Diawi to upload iOS builds in lieu of EAS Cloud.
 Optional - you could programmatically upload builds to Daiwi using https://github.com/marketplace/actions/upload-diawi
 so that you won't have to do it manually.
+
+Should probably install "expo-updates" package.
