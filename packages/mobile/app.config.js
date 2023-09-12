@@ -8,9 +8,7 @@ export default {
     name: getAppName(),
     slug: "bloom-reader-lite-mobile", // Used in Expo URLs or the project name in Expo Go, I think. I don't think it needs to vary based on release channel.
     version: "1.0.0",
-    expo: {
-        owner: "bloombooks",
-    },
+    owner: "bloombooks",
     orientation: "portrait",
     icon: "./assets/BloomIcon.png",
     userInterfaceStyle: "light",
