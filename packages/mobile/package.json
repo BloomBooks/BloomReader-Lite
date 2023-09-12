@@ -16,7 +16,7 @@
         "copy:webDist": "ts-node scripts/copyWebDist.ts",
         "eas:build:ios": "yarn && eas build --platform ios --profile developer",
         "eas:build:ios:release": "yarn && eas build --platform ios --profile release",
-        "eas-build-post-install": "yarn build:shared && yarn build:web && yarn copy:webDist",
+        "eas-build-pre-install": "yarn build:shared && yarn build:web && yarn copy:webDist",
         "watchComments": "This will watch the local packages that this app depends on, but you need to run start:expo to get hot reloading of the mobile app itself to trigger",
         "watch": "npm-run-all --parallel watch:shared watch:web watch:webDist",
         "watch:shared": "cd ../shared && yarn watch && cd ../mobile",
