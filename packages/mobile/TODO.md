@@ -31,3 +31,5 @@ Optional - you could programmatically upload builds to Daiwi using https://githu
 so that you won't have to do it manually.
 
 Should probably install "expo-updates" package.
+
+Add unit tests
