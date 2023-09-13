@@ -22,18 +22,18 @@ BloomReaderLite requires custom native code, so you cannot use the default Expo 
 
 ### 1: Find a custom development build
 
--   Look for a "developer" channel build, either from the ["Local Build"](https://github.com/BloomBooks/BloomReader-Lite/actions/workflows/build-local.yml) Github action workflow or the Expo cloud builds.
+-   Look for a "developer" channel build, either from the ["Local Build"](https://github.com/BloomBooks/BloomReader-Lite/actions/workflows/build-local.yml) Github action workflow or the [Expo cloud builds](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds).
 -   If one doesn't exist yet, you can generate a "developer" build using a variety of methods ways. Any of them are fine.
     -   Go to the ["Local Build"](https://github.com/BloomBooks/BloomReader-Lite/actions/workflows/build-local.yml) Github action workflow, then click "Run workflow" and start a "developer" channel build. Look in the artifacts, download the one for the desired platform, and unzip it to get the APK or IPA file.
-    -   Run the "Cloud Build" github action workflow, then look in our expo.dev account for the build (uses [Expo quota](https://expo.dev/pricing)).
-    -   On your development machine, run `yarn eas:build:android` or `yarn eas:build:ios` (or equivalently, `yarn eas build --platform [android|ios] --profile developer`), then look in our expo.dev account for the build (uses [Expo quota](https://expo.dev/pricing)).
+    -   Run the "Cloud Build" github action workflow, then look in our [expo.dev account for the build](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds) (uses [Expo quota](https://expo.dev/pricing)).
+    -   On your development machine, run `yarn eas:build:android` or `yarn eas:build:ios` (or equivalently, `yarn eas build --platform [android|ios] --profile developer`), then look in our [expo.dev account for the build](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds) (uses [Expo quota](https://expo.dev/pricing)).
     -   You could build it locally using `yarn eas build --platform [android|ios] --profile developer --local`. However, Android builds only work on Linux or MacOS, and iOS builds only work on MacOS.
 
 ### 2: Transfer to phone
 
 -   Transfer the .APK or .IPA file onto your device:
     -   [android] Any traditional way - USB cable, cloud storage (Dropbox / Google Drive / OneDrive), email it to yourself, etc.
-    -   [android, iOS] If you did an EAS Cloud Build, go to the build in expo.dev. There will be an "Install" button that you can click. This should generate a QR code that you can scan with your phone to easily download the app.
+    -   [android, iOS] If you did an EAS Cloud Build, go to the build in [expo.dev](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds). There will be an "Install" button that you can click. This should generate a QR code that you can scan with your phone to easily download the app.
         It also provides a link that you can copy and send to your device via whatever mechanism is convenient for you, and then you can paste that link in your device's web browser to download the app.
     -   [android, iOS] You can upload the APK or IPA to [Daiwi](https://diawi.com), which similarly to EAS Cloud Build, generates a QR code or link to easily download the app from your device.
     -   [iOS] Use the Mac version of iTunes to drag and drop the .ipa file onto the device.
