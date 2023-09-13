@@ -62,7 +62,7 @@ yarn
 yarn start
 ```
 
-Any changes you make in [web] or [mobile] should be hot reloaded.
+Any changes you make in [shared], [web], or [mobile] should be hot reloaded.
 Note: if you change the file structure in [mobile], hot reloading might not work, restart the development server if necessary.
 
 ## Build loop for phone
@@ -84,7 +84,7 @@ Note: if you change the file structure in [mobile], hot reloading might not work
 
 -   Go to a bloom-player repo at the desired revision.
 -   yarn build-dev. (This builds an unminified version)
--   Use "yarn link", or copy the contents of bloom-player's dist/bloomPlayer.js to this repo's assets/web-dist/bloomPlayer/bloomPlayerMin.jsAsset
+-   Use "yarn link [...]", or copy the contents of bloom-player's dist/bloomPlayer.js to this repo's assets/web-dist/bloomPlayer/bloomPlayerMin.jsAsset
 -   Reload the app
 -   Edit this file (bloomPlayerMin.jsAsset) as needed for debugging purposes.
 -   Reload the app every time this file changes.
@@ -146,11 +146,6 @@ You can generate the Android keystores by running `yarn eas build --local --plat
 If you're on a Windows machine, it'll let you enter the keystore dialog and then it'll fail when it starts building (because only Linux + Mac are supported). Even though it doesn't finish building, the keystore will still be generated and you're good to go.
 
 For iOS, if you're on a windows machine, you can start a cloud build (`yarn eas build -platform ios --profile {desiredProfile}`), fill out the dialogs, and then when it starts uploading your build to the cloud, you can cancel it. It'll still save the credential information and now your non-interactive builds on the Github action runner will be able to pick up the information.
-
-### Possibly Deprecated Development Notes
-
-After updating something in the "shared" package, you often need to manually Restart Typescript Server (use Ctrl+Shift+P in Visual Studio) before it gets the updates, unfortunately. I'm not sure why it has trouble picking it up.
-I guess it may have something to do with using a local package. (Typescript path alias picked up the updates almost instantly)
 
 ### Tunnel
 
