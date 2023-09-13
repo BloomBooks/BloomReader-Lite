@@ -1,8 +1,12 @@
 # You can use this to manually trigger a cloud build on Expo EAS
-# However, Expo EAS builds have a limited quota, whereas we don't have a limit when running on Github actions.
-# Since getting it to run on Github actions didn't end up being too hard, there's not too much point
-# to this workflow anymore
-name: Cloud Build (Deprecated)
+# Pros:
+# * After the build finishes, Expo makes it easy and convenient to download the APK/IPA file onto one's device,
+#   whereas the Github artifacts are a little less convenient.
+# Cons:
+# * Expo EAS builds have a limited quota, whereas we don't have a limit when running on Github actions.
+# * Waiting in the Expo queue, which if you're on free tier (as we currently are), can sometimes be a very long wait.
+#   In contrast, the Github runners usually start running immediately.
+name: Cloud Build
 on:
     workflow_dispatch:
         inputs:
@@ -10,25 +14,29 @@ on:
                 type: choice
                 description: "Which mobile platforms to build"
                 required: true
-                default: "all"
+                default: "android"
                 options:
                     - android
                     - ios
                     - all
-            releaseStage:
+            releaseChannel:
                 type: choice
                 description: "type of release"
                 required: true
                 default: "alpha"
                 options:
+                    - developer
                     - alpha
                     - beta
                     - release
 
 jobs:
-    build-full-job:
+    build-mobile:
         name: Build application binaries
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: packages/mobile
 
         steps:
             - name: Check for EXPO_TOKEN
@@ -37,6 +45,7 @@ jobs:
                     echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
                     exit 1
                   fi
+              working-directory: ./
 
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -48,47 +57,36 @@ jobs:
                   cache: yarn
                   cache-dependency-path: "**/yarn.lock"
 
-            - name: 1) [shared] Install dependencies
-              run: yarn --frozen-lockfile
-              working-directory: packages/shared/
-
-            - name: 1) [shared] Build
-              run: yarn build
-              working-directory: packages/shared/
-
-            - name: 2) [web] Install dependencies
-              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
+            - name: yarn install
+              # run: yarn --frozen-lockfile # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
               run: yarn
-              working-directory: packages/web/
 
-            - name: 2) [web] Build
+            - name: "Check for compile errors"
+              # Note: Running "tsc" at the end of "yarn build" is the relevant part here.
               run: yarn build
-              working-directory: packages/web/
 
-            - name: 3A) [mobile] Install dependencies
-              # run: yarn --frozen-lockfile   # TODO: --frozen-lockfile is erroring out, saying it must be updated. But it doesn't do that on my local machine. Why does it do that on the Github runner? Both seem to be using the same yarn version, 1.22.19
-              run: yarn
-              working-directory: packages/mobile/
+            - name: "Check if webapp was copied"
+              id: check-webapp-copied
+              run: |
+                  if [ -f "assets/web-dist/index.html" ] || [ -e "assets/web-dist/index.html" ]; then
+                      echo "File exists"
+                      echo "file_exists=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "File does not exist"
+                      echo "file_exists=false" >> $GITHUB_OUTPUT
+                  fi
 
-            - name: 3A) [mobile] Setup EAS
+            - name: "Fail if webapp didn't get copied"
+              if: steps.check-webapp-copied.outputs.file_exists != 'true'
+              run: |
+                  echo "The file does not exist at assets/web-dist/index.html"
+                  exit 1
+
+            - name: Setup EAS
               uses: expo/expo-github-action@v8
               with:
                   eas-version: latest
                   token: ${{ secrets.EXPO_TOKEN }}
 
-            # IF interested in trying local build: https://github.com/suiet/suiet/blob/63b50e4ba225b294af1018f3f98b9666738837c7/.github/workflows/build-app.yml#L9
-            - name: 3A) [mobile] EAS Cloud Build
-              run: eas build --platform  ${{ github.event.inputs.platform }} --profile  ${{ github.event.inputs.releaseStage }} --non-interactive --no-wait
-              working-directory: packages/mobile/
-
-            # - name: 3B) [electron] Install dependencies
-            #   run: yarn --frozen-lockfile
-            #   working-directory: ./packages/electron
-
-            # - name: 3B) [electron] Build
-            #   run: yarn build
-            #   working-directory: ./packages/electron
-
-            - name: 3B) [electron] Temporary Placeholder
-              run: echo "nothing to do"
-              working-directory: ./packages/electron
+            - name: "EAS Cloud Build"
+              run: eas build --platform ${{ inputs.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive --no-wait
