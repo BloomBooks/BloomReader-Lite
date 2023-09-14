@@ -112,9 +112,19 @@ Note: if you change the file structure in [mobile], hot reloading might not work
     -   There is a SIL organization one. Chris Hubbard is the administrator for that. Ask him if you need one.
     -   It is needed for registering more iOS devices.
 
+## Submitting to app stores
+
+### Google Play Store (Android)
+
+### Apple App Store (iOS)
+
+Much (but not all) of the app store information (such as the app's description) can be submitted via the store.config.json file. It's best if you keep everything up-to-date there.
+
+You can update app store metadata via `yarn eas metadata:push`. Maybe you could do `yarn eas metadata:pull` first and see if there's any changes that were manually made that should be saved in store.config.json first though.
+
 ## Other Topics
 
-## iOS Internal Distribution
+### iOS Internal Distribution
 
 This is only necessary for iOS internal distribution builds (cases when eas.json specifies distribution: "internal"). I think this mainly only applies to alpha channel builds.
 

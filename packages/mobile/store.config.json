@@ -1,0 +1,38 @@
+{
+    "configVersion": 0,
+    "apple": {
+        "info": {
+            "en-US": {
+                "title": "Bloom Reader Preview",
+                "subtitle": "",
+                "description": "Read Bloom books anywhere",
+                "keywords": ["Bloom", "books", "literacy", "reading"],
+                "marketingUrl": "https://bloomlibrary.org",
+                "supportUrl": "https://community.bloomlibrary.org",
+                "privacyPolicyUrl": "https://bloomlibrary.org/privacy"
+            }
+        },
+        "release": {
+            "automaticRelease": false
+        },
+        "advisory": {
+            "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+            "contests": "NONE",
+            "gamblingSimulated": "NONE",
+            "horrorOrFearThemes": "NONE",
+            "matureOrSuggestiveThemes": "NONE",
+            "medicalOrTreatmentInformation": "NONE",
+            "profanityOrCrudeHumor": "NONE",
+            "sexualContentGraphicAndNudity": "NONE",
+            "sexualContentOrNudity": "NONE",
+            "violenceCartoonOrFantasy": "NONE",
+            "violenceRealistic": "NONE",
+            "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+            "gambling": false,
+            "unrestrictedWebAccess": false,
+            "kidsAgeBand": null,
+            "seventeenPlus": false
+        },
+        "categories": ["BOOKS", "EDUCATION"]
+    }
+}

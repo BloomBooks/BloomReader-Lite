@@ -33,3 +33,8 @@ so that you won't have to do it manually.
 Should probably install "expo-updates" package.
 
 Add unit tests
+
+Apple App Store submission:
+Fill out the information like description, keywords, screenshots, etc.
+
+Android App Icon - It's slightly cut off (too zoomed in) compared to the native BloomReader version

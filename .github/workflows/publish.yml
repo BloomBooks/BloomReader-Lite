@@ -61,6 +61,7 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v3
 
+            # Documentation: https://github.com/marketplace/actions/download-workflow-artifact
             - name: Download artifact
               id: download-artifact
               uses: dawidd6/action-download-artifact@v2
@@ -89,3 +90,5 @@ jobs:
             - name: "EAS Submit"
               run: eas submit --path ${{ steps.find-build-artifact.outputs.artifact }} --platform ${{ inputs.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive --no-wait
               working-directory: packages/mobile
+              env:
+                  EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}

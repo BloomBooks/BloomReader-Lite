@@ -73,9 +73,9 @@
                 "track": "internal" // We picked "internal" instead of "alpha" (Closed Testing) because internal doesn't require waiting for App Review.
             },
             "ios": {
-                "appleId": "TODO",
-                "ascAppId": "TODO",
-                "appleTeamId": "TODO",
+                // "appleId" is set via the EXPO_APPLE_ID environment variable
+                "ascAppId": "6466501176",
+                "appleTeamId": "3YE4W86L3G",
                 "companyName": "SIL International"
             }
         },
@@ -83,20 +83,12 @@
             "extends": "alpha",
             "android": {
                 "track": "beta"
-            },
-            "ios": {
-                // TODO: Figure out how to submit to TestFlight vs submitting to production.
-                // Read https://levelup.gitconnected.com/react-native-how-to-publish-an-expo-app-to-testflight-debug-common-errors-90e427b4b5ea
             }
         },
         "release": {
             "extends": "alpha",
             "android": {
                 "track": "production"
-            },
-            "ios": {
-                // TODO: Figure out how to submit to TestFlight vs submitting to production.
-                // Read https://levelup.gitconnected.com/react-native-how-to-publish-an-expo-app-to-testflight-debug-common-errors-90e427b4b5ea
             }
         }
     }
