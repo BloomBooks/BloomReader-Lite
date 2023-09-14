@@ -1,0 +1,90 @@
+#
+# A draft version to Publish a build to app store.
+#
+# Read: https://docs.expo.dev/submit/eas-json/
+# To read about to submit to the app stores:
+#   Android: https://docs.expo.dev/submit/android/
+#   iOS: https://docs.expo.dev/submit/ios/
+
+name: Publish (Draft)
+on:
+    workflow_dispatch:
+        inputs:
+            runId:
+                type: string
+                description: "The workflow whose build artifacts to submit to the app store, as in https://github.com/BloomBooks/BloomReader-Lite/actions/runs/[runId]"
+                required: true
+
+            platform:
+                type: choice
+                description: "Which mobile platforms to build"
+                required: true
+                default: "android"
+                options:
+                    - android
+                    - ios
+
+            releaseChannel:
+                type: choice
+                description: "type of release"
+                required: true
+                default: "alpha"
+                options:
+                    - alpha # Android's "Internal Test" or iOS "Internal Distribution". Not sure if there's much need for the iOS version of this.
+                    - beta # Android's "Open Test" or iOS "TestFlight"
+                    - release # self-explanatory
+
+    workflow_call:
+        inputs:
+            platform:
+                type: string
+                required: true
+            releaseChannel:
+                type: string
+                required: true
+
+jobs:
+    publish-mobile:
+        name: Publish Mobile App
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check for EXPO_TOKEN
+              run: |
+                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+                    echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+                    exit 1
+                  fi
+              working-directory: ./
+
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Download artifact
+              id: download-artifact
+              uses: dawidd6/action-download-artifact@v2
+              with:
+                  run_id: ${{ inputs.runId }}
+                  path: ./artifacts
+                  name: BloomReaderLite-${{ inputs.platform }}-${{ inputs.releaseChannel }}
+                  search_artifacts: true
+
+            - name: "Debug: List directory contents"
+              run: ls -l artifacts
+
+            - name: Find Build Artifact
+              id: find-build-artifact
+              # Note: We are expecting the artifacts folder to only contain one file in it, which is the APK or IPA file for the requested platform/releaseChannel
+              run: |
+                  artifact_path=$(find ./artifacts -name 'build-*')
+                  echo "artifact=$artifact_path" >> $GITHUB_OUTPUT
+
+            - name: Setup EAS
+              uses: expo/expo-github-action@v8
+              with:
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
+
+            - name: "EAS Submit"
+              run: eas submit --path ${{ steps.find-build-artifact.outputs.artifact }} --platform ${{ inputs.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive --no-wait
+              working-directory: packages/mobile
