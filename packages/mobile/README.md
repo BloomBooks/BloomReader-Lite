@@ -26,8 +26,8 @@ BloomReaderLite requires custom native code, so you cannot use the default Expo 
 -   If one doesn't exist yet, you can generate a "developer" build using a variety of methods ways. Any of them are fine.
     -   Go to the ["Local Build"](https://github.com/BloomBooks/BloomReader-Lite/actions/workflows/build-local.yml) Github action workflow, then click "Run workflow" and start a "developer" channel build. Look in the artifacts, download the one for the desired platform, and unzip it to get the APK or IPA file.
     -   Run the "Cloud Build" github action workflow, then look in our [expo.dev account for the build](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds) (uses [Expo quota](https://expo.dev/pricing)).
-    -   On your development machine, run `yarn eas:build:android` or `yarn eas:build:ios` (or equivalently, `yarn eas build --platform [android|ios] --profile developer`), then look in our [expo.dev account for the build](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds) (uses [Expo quota](https://expo.dev/pricing)).
-    -   You could build it locally using `yarn eas build --platform [android|ios] --profile developer --local`. However, Android builds only work on Linux or MacOS, and iOS builds only work on MacOS.
+    -   On your development machine, run `yarn eas:build:android` or `yarn eas:build:ios` (or equivalently, `npx eas-cli build --platform [android|ios] --profile developer`), then look in our [expo.dev account for the build](https://expo.dev/accounts/bloombooks/projects/bloom-reader-lite-mobile/builds) (uses [Expo quota](https://expo.dev/pricing)).
+    -   You could build it locally using `yarn npx eas-cli build --platform [android|ios] --profile developer --local`. However, Android builds only work on Linux or MacOS, and iOS builds only work on MacOS.
 
 ### 2: Transfer to phone
 
@@ -98,9 +98,9 @@ Note: if you change the file structure in [mobile], hot reloading might not work
 -   Otherwise, just doing `yarn start` from your dev machine is sufficient to deliver simpler changes like Typescript code changes or adding a new JS-only module.
 -   Precondition: If not already logged in, run `yarn expo login`
 -   Android:
-    -   Run `yarn eas build --profile development --platform android`
+    -   Run `yarn npx eas-cli build --profile development --platform android`
 -   iOS
-    -   Run `yarn eas build --profile development --platform ios`
+    -   Run `yarn npx eas-cli build --profile development --platform ios`
     -   You can probably get by without an Apple Developer account if nothing needs to change. When it prompts you if you want to login, you can select "no". Assuming no new iOS devices have been registered to be allowed to use the internal distribution build, then the next question will be "All your registered devices are present in the Provisioning Profile. Would you like to reuse the profile?" You can select "yes" for that. If not, you most likely want to add the newly registered devices to the provisioning profile. Follow the prompts for that.
 -   You can also substitute "--platform all" to build both at once. (FYI, this will be billed as 2 builds, not 1)
 -   Further Reading: https://docs.expo.dev/development/create-development-builds/
@@ -120,7 +120,7 @@ Note: if you change the file structure in [mobile], hot reloading might not work
 
 Much (but not all) of the app store information (such as the app's description) can be submitted via the store.config.json file. It's best if you keep everything up-to-date there.
 
-You can update app store metadata via `yarn eas metadata:push`. Maybe you could do `yarn eas metadata:pull` first and see if there's any changes that were manually made that should be saved in store.config.json first though.
+You can update app store metadata via `yarn npx eas-cli metadata:push`. Maybe you could do `yarn npx eas-cli metadata:pull` first and see if there's any changes that were manually made that should be saved in store.config.json first though.
 
 ## Other Topics
 
@@ -135,7 +135,7 @@ To register a new device, have the owner of that device visit an Expo register-d
 If you need to generate a new link:
 
 -   Precondition: You will need to have an Apple Developer account you can sign in to.
--   Run `yarn eas device:create`
+-   Run `yarn npx eas-cli device:create`
 -   You'll be prompted to login to your Apple Developer account if you aren't already.
 -   Send the QR code or link to any iOS devices you want to be able to access this. On the device, open the QR code/link, download the profile, then install the profile. (https://docs.expo.dev/build/internal-distribution/#22-configure-app-signing-credentials-for-ios)
 -   See [instructions to re-sign a build](https://github.com/expo/eas-cli#eas-buildresign) (or do a full re-build).
@@ -153,10 +153,10 @@ Each unique package identifier needs it own keystores/credentials.
 
 If you need to generate new keystores or credentials... well, you can't do it in non-interactive mode on the Github action runner. So you should do that from your local machine.
 
-You can generate the Android keystores by running `yarn eas build --local --platform android --profile {desiredProfile}`.
+You can generate the Android keystores by running `yarn npx eas-cli build --local --platform android --profile {desiredProfile}`.
 If you're on a Windows machine, it'll let you enter the keystore dialog and then it'll fail when it starts building (because only Linux + Mac are supported). Even though it doesn't finish building, the keystore will still be generated and you're good to go.
 
-For iOS, if you're on a windows machine, you can start a cloud build (`yarn eas build -platform ios --profile {desiredProfile}`), fill out the dialogs, and then when it starts uploading your build to the cloud, you can cancel it. It'll still save the credential information and now your non-interactive builds on the Github action runner will be able to pick up the information.
+For iOS, if you're on a windows machine, you can start a cloud build (`yarn npx eas-cli build -platform ios --profile {desiredProfile}`), fill out the dialogs, and then when it starts uploading your build to the cloud, you can cancel it. It'll still save the credential information and now your non-interactive builds on the Github action runner will be able to pick up the information.
 
 ### Tunnel
 

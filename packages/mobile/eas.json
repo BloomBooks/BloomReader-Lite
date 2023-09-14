@@ -1,7 +1,7 @@
 // REFERENCE: https://docs.expo.dev/build-reference/eas-json/
 {
     "cli": {
-        "version": ">= 2.7.1",
+        "version": ">= 5.2.0",
         "promptToConfigurePushNotifications": false
     },
     "build": {
