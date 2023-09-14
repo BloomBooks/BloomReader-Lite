@@ -134,7 +134,8 @@ If you need to generate a new link:
 
 ### Side by side installation
 
-Each of the release channels has its own package identifier (at least when building, not necessarily when submitting to the app store), so you can have Developer, Alpha, Beta, and Release all installed side-by-side on your mobile device.
+The "alpha", "beta", and "release" channels are designed to be submitted to the app stores (as one app with multiple tracks), so they all have the same package identifier. This means that you can only have one of the tracks installed at a time, since they share the same package identifier.
+You can have multiple channels installed side-by-side on the same mobile device if you use "beta-internal" and "release-internal" channels to replace "beta" and "release".
 
 ### Generating Android keystores or iOS credentials
 
