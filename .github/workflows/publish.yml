@@ -92,7 +92,7 @@ jobs:
                   token: ${{ secrets.EXPO_TOKEN }}
 
             - name: "EAS Submit"
-              run: eas submit --path ${{ steps.find-build-artifact.outputs.artifact }} --platform ${{ inputs.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive --no-wait
+              run: eas submit --path ${{ steps.find-build-artifact.outputs.artifact }} --platform ${{ inputs.platform }} --profile  ${{ inputs.releaseChannel }} --non-interactive
               working-directory: packages/mobile
               env:
                   EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
