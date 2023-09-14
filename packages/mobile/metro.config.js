@@ -14,7 +14,8 @@ config.resolver.assetExts.push(
     // At runtime, copy the .jsAsset file back to a .js extension
     "jsAsset",
     "bloompub", // For sample books
-    "htm" // For bloomplayer.htm
+    "htm", // For bloomplayer.htm
+    "png"
 );
 
 if (!config.watchFolders) {

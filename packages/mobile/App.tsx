@@ -49,6 +49,7 @@ export default function App() {
                 // TODO: Politely inform the end user too.
             } finally {
                 // Tell the application to render
+                console.info("Setting appIsReady=true.");
                 setAppIsReady(true);
             }
         }
