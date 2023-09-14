@@ -19,6 +19,7 @@ on:
             releaseChannel:
                 type: string
                 required: true
+run-name: Local Build - ${{ inputs.releaseChannel }}
 
 jobs:
     build-mobile:
