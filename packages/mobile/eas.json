@@ -5,7 +5,12 @@
         "promptToConfigurePushNotifications": false
     },
     "build": {
+        "base": {
+            "node": "16.14.0",
+            "yarn": "1.22.19"
+        },
         "developer": {
+            "extends": "base",
             "developmentClient": true,
             "distribution": "internal",
             "channel": "developer",
@@ -15,24 +20,84 @@
         },
         "alpha": {
             // Intended for "internal distribution" (iOS) or "internal test" (Android)
+            "extends": "base",
             "distribution": "internal",
             "channel": "alpha",
             "env": {
                 "RELEASE_CHANNEL": "alpha"
             }
         },
+        "beta-internal": {
+            // Intended for testing the beta build on a local device (side-by-side OK)
+            "extends": "base",
+            "channel": "beta-internal",
+            "env": {
+                "RELEASE_CHANNEL": "beta-internal"
+            },
+            "android": {
+                "buildType": "apk" // Produce .apk instead of .aab
+            }
+        },
         "beta": {
-            // Intended for "TestFlight" (iOS) or "Open test" (Android)  (or "Closed test" is probably fine too)
+            // Intended for "TestFlight" (iOS) or "Open test" (Android)
+            "extends": "base",
             "channel": "beta",
             "env": {
                 "RELEASE_CHANNEL": "beta"
             }
         },
+        "release-internal": {
+            // Intended for testing the beta build on a local device (side-by-side OK)
+            "extends": "base",
+            "channel": "release-internal",
+            "env": {
+                "RELEASE_CHANNEL": "release-internal"
+            },
+            "android": {
+                "buildType": "apk" // Produce .apk instead of .aab
+            }
+        },
         "release": {
-            "channel": "release"
+            "extends": "base",
+            "channel": "release",
+            "env": {
+                "RELEASE_CHANNEL": "release"
+            }
         }
     },
     "submit": {
-        "release": {}
+        // Reference: https://docs.expo.dev/submit/eas-json/
+        "alpha": {
+            "android": {
+                // The service account key was provided directly to Expo. See https://stackoverflow.com/a/77018383
+                "track": "internal" // We picked "internal" instead of "alpha" (Closed Testing) because internal doesn't require waiting for App Review.
+            },
+            "ios": {
+                "appleId": "TODO",
+                "ascAppId": "TODO",
+                "appleTeamId": "TODO",
+                "companyName": "SIL International"
+            }
+        },
+        "beta": {
+            "extends": "alpha",
+            "android": {
+                "track": "beta"
+            },
+            "ios": {
+                // TODO: Figure out how to submit to TestFlight vs submitting to production.
+                // Read https://levelup.gitconnected.com/react-native-how-to-publish-an-expo-app-to-testflight-debug-common-errors-90e427b4b5ea
+            }
+        },
+        "release": {
+            "extends": "alpha",
+            "android": {
+                "track": "production"
+            },
+            "ios": {
+                // TODO: Figure out how to submit to TestFlight vs submitting to production.
+                // Read https://levelup.gitconnected.com/react-native-how-to-publish-an-expo-app-to-testflight-debug-common-errors-90e427b4b5ea
+            }
+        }
     }
 }

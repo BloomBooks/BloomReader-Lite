@@ -27,7 +27,9 @@ on:
                 options:
                     - developer
                     - alpha
+                    - beta-internal
                     - beta
+                    - release-internal
                     - release
 
 jobs:

@@ -1,5 +1,6 @@
 /**
  * Like app.json, but allows dynamic configuration
+ * Documentation: https://docs.expo.dev/versions/latest/config/app/
  */
 
 const releaseChannel = process.env.RELEASE_CHANNEL?.toLowerCase();
@@ -24,6 +25,7 @@ export default {
     },
     android: {
         package: getPackageIdentifier(),
+
         // ENHANCE: Create the adaptive icon. See instructions here: https://docs.expo.dev/develop/user-interface/app-icons/#android. It's not hard.
         // "adaptiveIcon": {
         //     "foregroundImage": "./assets/adaptive-icon.png",
@@ -48,10 +50,12 @@ function getAppName() {
     switch (releaseChannel) {
         case "developer":
             return `${baseAppName} (Dev)`;
-        case "alpha":
-            return `${baseAppName} (Alpha)`;
-        case "beta":
+        case "beta-internal":
             return `${baseAppName} (Beta)`;
+        case "release-internal":
+            return `${baseAppName} (Release)`;
+        case "alpha":
+        case "beta":
         case "release":
         case undefined:
             return baseAppName;
@@ -69,12 +73,27 @@ function getPackageIdentifier() {
     const basePackageIdentifier = "org.sil.bloomreaderlite";
     switch (releaseChannel) {
         case "developer":
+        case "beta-internal":
+        case "release-internal":
+            // The purpose of this is to allow side-by-side installation on test devices,
+            // but when publishing to the app stores (regardless of whether on internal or TestFlight or production),
+            // we want it to all have the same package identifier.
+            // (Well, at least if you want to use the single-app model that the app stores try to point you to.
+            // If you want to have a multi-app model where each track is its own app then obviously they should
+            // all have their own package identifier)
+            return `${basePackageIdentifier}.${releaseChannel.replaceAll(
+                "-",
+                "."
+            )}`; // FYI, android package identifiers cannot contain "-"
         case "alpha":
         case "beta":
-            return `${basePackageIdentifier}.${releaseChannel}`;
         case "release":
         case undefined:
-            return basePackageIdentifier;
+            // Eventually we want it to return basePackageIdentifier when we're ready for the real thing,
+            // but right now we use "org.sil.bloomreaderlite.preview" instead to make sure we don't
+            // accidentally mess anything up on our real desired package identifier
+            //return basePackageIdentifier;
+            return "org.sil.bloomreaderlite.preview";
         default:
             console.warn("Unknown releaseChannel " + releaseChannel);
             return basePackageIdentifier;

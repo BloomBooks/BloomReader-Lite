@@ -14,5 +14,11 @@
         "statusBar.noFolderBackground": "#008000",
         "statussBar.prominentBackground": "#008000"
     },
-    "cSpell.words": ["bloombooks", "bloomplayer", "Daiwi", "Ionicons"]
+    "cSpell.words": [
+        "bloombooks",
+        "bloomplayer",
+        "Daiwi",
+        "Ionicons",
+        "bloomreaderlite"
+    ]
 }

@@ -10,7 +10,9 @@ on:
                 options:
                     - developer
                     - alpha
+                    - beta-internal
                     - beta
+                    - release-internal
                     - release
     workflow_call:
         inputs:

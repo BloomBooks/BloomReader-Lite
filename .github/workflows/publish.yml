@@ -33,6 +33,7 @@ on:
                     - alpha # Android's "Internal Test" or iOS "Internal Distribution". Not sure if there's much need for the iOS version of this.
                     - beta # Android's "Open Test" or iOS "TestFlight"
                     - release # self-explanatory
+                    # Definitely no need for beta-internal or release-internal for the publish workflow. The *-internal channels are designed only for device testing
 
     workflow_call:
         inputs:
