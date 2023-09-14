@@ -28,9 +28,9 @@ on:
                 type: choice
                 description: "type of release"
                 required: true
-                default: "alpha"
+                default: "beta"
                 options:
-                    - alpha # Android's "Internal Test" or iOS "Internal Distribution". Not sure if there's much need for the iOS version of this.
+                    - alpha # Android's "Internal Test".  Not compatible with iOS
                     - beta # Android's "Open Test" or iOS "TestFlight"
                     - release # self-explanatory
                     # Definitely no need for beta-internal or release-internal for the publish workflow. The *-internal channels are designed only for device testing
@@ -43,10 +43,11 @@ on:
             releaseChannel:
                 type: string
                 required: true
+run-name: Publish ${{ inputs.platform }} - ${{ inputs.releaseChannel }} (${{ inputs.runId }})
 
 jobs:
     publish-mobile:
-        name: Publish Mobile App
+        name: Publish ${{ inputs.platform }} - ${{ inputs.releaseChannel }}
         runs-on: ubuntu-latest
 
         steps:
@@ -67,12 +68,13 @@ jobs:
               uses: dawidd6/action-download-artifact@v2
               with:
                   run_id: ${{ inputs.runId }}
-                  path: ./artifacts
+                  path: ./packages/mobile/artifacts
                   name: BloomReaderLite-${{ inputs.platform }}-${{ inputs.releaseChannel }}
                   search_artifacts: true
 
             - name: "Debug: List directory contents"
               run: ls -l artifacts
+              working-directory: packages/mobile
 
             - name: Find Build Artifact
               id: find-build-artifact
@@ -80,6 +82,8 @@ jobs:
               run: |
                   artifact_path=$(find ./artifacts -name 'build-*')
                   echo "artifact=$artifact_path" >> $GITHUB_OUTPUT
+              # Note: It is more straightforward if this is run from the same directory that "eas submit" will be run from.
+              working-directory: packages/mobile
 
             - name: Setup EAS
               uses: expo/expo-github-action@v8
