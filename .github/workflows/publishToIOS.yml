@@ -1,0 +1,20 @@
+# Uploads the iOS binaries to the Apple's AppStoreConnect. You need to do some manual work
+# on the AppStoreConnect website to have TestFlight start for it or to promote the build to a new release version
+name: Publish iOS to Beta
+on:
+    workflow_dispatch:
+        inputs:
+            runId:
+                type: string
+                description: "The workflow whose build artifacts to submit to the app store, as in https://github.com/BloomBooks/BloomReader-Lite/actions/runs/[runId]"
+                required: true
+run-name: Publish iOS to Beta (${{ inputs.runId }})
+
+jobs:
+    publish:
+        uses: ./.github/workflows/publish.yml
+        secrets: inherit
+        with:
+            runId: ${{ inputs.runId }}
+            platform: ios
+            releaseChannel: beta

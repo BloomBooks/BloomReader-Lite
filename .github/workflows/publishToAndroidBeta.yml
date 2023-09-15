@@ -1,0 +1,19 @@
+# Uploads an Android binary to the Google Play Store.
+name: Z_Publish Android to Beta (Open Test) [Draft]
+on:
+    workflow_dispatch:
+        inputs:
+            runId:
+                type: string
+                description: "The workflow whose build artifact to submit to the app store, as in https://github.com/BloomBooks/BloomReader-Lite/actions/runs/[runId]"
+                required: true
+run-name: Publish Android to Beta (${{ inputs.runId }})
+
+jobs:
+    publish:
+        uses: ./.github/workflows/publish.yml
+        secrets: inherit
+        with:
+            runId: ${{ inputs.runId }}
+            platform: android
+            releaseChannel: beta

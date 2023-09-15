@@ -1,12 +1,13 @@
-#
-# A draft version to Publish a build to app store.
+# Publishes a build to app store.
+# Normally, you can use the publishToIOS, publishToAndroid[Alpha|Beta|Release] workflows instead,
+#    which are more convenient wrappers around this workflow
 #
 # Read: https://docs.expo.dev/submit/eas-json/
 # To read about to submit to the app stores:
 #   Android: https://docs.expo.dev/submit/android/
 #   iOS: https://docs.expo.dev/submit/ios/
 
-name: Publish (Draft)
+name: Z_Publish Helper
 on:
     workflow_dispatch:
         inputs:
@@ -40,6 +41,10 @@ on:
             #          the options are "Android - Alpha", "Android - Beta", "Android - Release", and "iOS - Beta"
     workflow_call:
         inputs:
+            runId:
+                type: string
+                required: true
+
             platform:
                 type: string
                 required: true
