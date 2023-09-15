@@ -41,6 +41,21 @@ export default {
             projectId: "1fb41809-af21-48d4-9a9b-f39d83c209f1",
         },
     },
+    plugins: [
+        [
+            "expo-updates",
+            {
+                username: "bloombooks",
+            },
+        ],
+    ],
+    updates: {
+        // For expo-updates
+        url: "https://u.expo.dev/1fb41809-af21-48d4-9a9b-f39d83c209f1",
+    },
+    runtimeVersion: {
+        policy: "appVersion",
+    },
     experiments: {
         tsconfigPaths: true,
     },
