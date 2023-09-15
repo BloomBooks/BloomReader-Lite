@@ -1,5 +1,5 @@
-import { IBloomReaderLiteApi } from "@shared/api";
-import { MessageToBackend } from "@shared/toBackend/messages";
+import { IBloomReaderLiteApi } from "./api";
+import { MessageToBackend } from "./toBackend/messages";
 
 /**
  * Try to keep this function generic enough that if moved, it could be re-used for sending messages to
@@ -13,6 +13,9 @@ export function handleMessageReceived(
         switch (data.messageType) {
             case "console-log":
                 api.consoleLog(data);
+                break;
+            case "delete-book":
+                api.deleteBook(data);
                 break;
             case "get-book-collection":
                 api.getBookCollection(data);
@@ -55,11 +58,12 @@ export function handleMessageReceived(
             //     onVideoPlayed(data);
             //     break;
             // default:
-            //     ErrorLog.logError({
-            //         logMessage:
-            //             "BookReader.onMessageReceived() does not understand the messageType on this event: " +
-            //             JSON.stringify(event, getStringifyReplacer()),
-            //     });
+            //     api.onUnknownThingReceived();
+            //     // ErrorLog.logError({
+            //     //     logMessage:
+            //     //         "BookReader.onMessageReceived() does not understand the messageType on this event: " +
+            //     //         JSON.stringify(event, getStringifyReplacer()),
+            //     // });
         }
 
         // Next step: should also handle message type storePageData. The data object will also

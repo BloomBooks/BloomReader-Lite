@@ -4,6 +4,7 @@
  */
 export type RequestToBackendBase =
     | ConsoleLogRequestBase
+    | DeleteBookRequestBase
     | GetBookCollectionRequestBase
     | GetThumbnailRequestBase
     | UnpackZipFileRequestBase;
@@ -12,9 +13,9 @@ export type RequestToBackendBase =
  * A fully fledged request to the backend
  * This type is more for the backend - it has the exact form that the request should take "over the wire"
  */
-
 export type RequestToBackend =
     | ConsoleLogRequest
+    | DeleteBookRequest
     | GetBookCollectionRequest
     | GetThumbnailRequest
     | UnpackZipFileRequest;
@@ -30,6 +31,12 @@ export type ConsoleLogRequestBase = {
     optionalParams: any;
 };
 export type ConsoleLogRequest = ConsoleLogRequestBase;
+
+export type DeleteBookRequestBase = {
+    messageType: "delete-book";
+    bookPathToDelete: string;
+};
+export type DeleteBookRequest = DeleteBookRequestBase & WithId;
 
 /**
  * Gets the books and shelves available in this collection

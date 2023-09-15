@@ -15,6 +15,7 @@ import { BookCollection } from "../models/BookCollection";
  *       so it's recommended for the consumer to avoid using utility type transformations if feasible.
  */
 export type ResponseToFrontend = (
+    | DeleteBookResponse
     | GetBookCollectionResponse
     | GetThumbnailResponse
     | UnpackZipFileResponse
@@ -34,6 +35,11 @@ type Failure = {
 type GenericFailure = {
     reason: string;
 } & Failure;
+
+export type DeleteBookResponse = {
+    messageType: "delete-book-response";
+    success: boolean;
+};
 
 export type GetBookCollectionResponse = {
     messageType: "get-book-collection-response";

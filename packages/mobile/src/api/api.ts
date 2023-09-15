@@ -2,6 +2,7 @@ import { IBloomReaderLiteApi } from "@shared/api";
 import { LogErrorMessage } from "@shared/toBackend/bloomPlayerMessages";
 import {
     ConsoleLogRequest,
+    DeleteBookRequest,
     GetBookCollectionRequest,
     GetThumbnailRequest,
     UnpackZipFileRequest,
@@ -113,6 +114,9 @@ export function useApi() {
             ErrorLog.logError({
                 logMessage: data.message,
             });
+        },
+        deleteBook: function (request: DeleteBookRequest) {
+            throw new Error("Function not implemented.");
         },
     };
 
