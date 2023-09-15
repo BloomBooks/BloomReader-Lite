@@ -13,7 +13,7 @@ import {
 } from "react-native-webview/lib/WebViewTypes";
 import { BloomContext } from "./BloomContext";
 import { useApi } from "./api/api";
-import { handleMessageReceived } from "@shared/dist/handleMessageReceived";
+import { handleMessageReceived } from "@shared/handleMessageReceived";
 // import { DownloadProgressView } from "./components/DownloadProgressView";
 import { URL } from "react-native-url-polyfill";
 import { Locations } from "./constants/Locations";
