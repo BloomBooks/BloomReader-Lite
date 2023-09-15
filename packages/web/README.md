@@ -14,6 +14,10 @@ To debug the web app only on your computer, you can use `yarn dev`. This can be 
 You can use [MockBackend.ts](https://github.com/BloomBooks/BloomReader-Lite/blob/master/packages/web/src/api/MockBackend.ts) to fake backend responses for development purposes.
 I recommend manually copying any mock books you need for development into ./mock-data/Books/
 
+## Styling
+
+The current thought is to make the design more or less consistent with the look of the original Android app (i.e., rely on Material UI). Since we're going to be on both mobile + desktop platforms, and this is a web-technology based app, and it will be hosting BloomLibrary as a substantial part of the app anyway, we're planning to rely on Material-ish designs rather than try to emulate native look and feel on mobile
+
 ## Boilerplate info from Vite (React + TS + Vite) template
 
 ### React + TypeScript + Vite
