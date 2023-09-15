@@ -65,6 +65,8 @@ yarn start
 Any changes you make in [shared], [web], or [mobile] should be hot reloaded.
 Note: if you change the file structure in [mobile], hot reloading might not work, restart the development server if necessary.
 
+Note: `yarn start` can flaky sometimes (missing asset error when you try to run the app) because it starts up multiple watches. If it's flaky, you can instead start `yarn watch` in one terminal, wait for that to be ready, then run `yarn start:expo` in a different terminal.
+
 ## Build loop for phone
 
 -   Ensure Expo server running on dev machine (yarn start)
