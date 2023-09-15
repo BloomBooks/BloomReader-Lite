@@ -32,9 +32,12 @@ on:
                 options:
                     - alpha # Android's "Internal Test".  Not compatible with iOS
                     - beta # Android's "Open Test" or iOS "TestFlight"
-                    - release # self-explanatory
+                    - release # Android: self-explanatory.  iOS: I'm not sure if this is really necessary. I think you maybe publish "beta" first, and then promote it from the appstoreconnect.apple.com website?
                     # Definitely no need for beta-internal or release-internal for the publish workflow. The *-internal channels are designed only for device testing
 
+            # ENHANCE: Given the differences between Android and iOS,
+            #          perhaps it makes more sense to refactor such that
+            #          the options are "Android - Alpha", "Android - Beta", "Android - Release", and "iOS - Beta"
     workflow_call:
         inputs:
             platform:

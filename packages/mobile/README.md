@@ -124,7 +124,9 @@ Much (but not all) of the app store information (such as the app's description) 
 
 You can update app store metadata via `yarn npx eas-cli metadata:push`. Maybe you could do `yarn npx eas-cli metadata:pull` first and see if there's any changes that were manually made that should be saved in store.config.json first though.
 
-Note that every time you publish, the BUILD number needs to be increased. Note that the BUILD number is not the same as the VERSION number (the version number is what real users see in the app store)
+Note that every time before you publish to the app store, the BUILD number needs to be increased. Note that the BUILD number is not the same as the VERSION number (the version number is what real users see in the app store). The BUILD number is normally just a single integer.
+
+After the "Publish" workflow completes, go to https://appstoreconnect.apple.com/apps, find the Bloom Reader app, and you can see the new build under the TestFlight tab. (To release, I guess you probably promote a build in the App Store)
 
 ## Other Topics
 
