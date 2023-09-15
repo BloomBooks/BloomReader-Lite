@@ -6,6 +6,8 @@
 -   Change the status bar color
 -   AppBar needs some padding - amount TBD
 -   Android - bloom-reader-against-dark.png logo in AppBar doesn't load (broken image icon appears in its place)
+    -   Note: After adding expo-updates, I see (in AndroidStudio Logcat) errors like "Failed to copy asset null" and "Failed to download asset with key 8e3a10e157f75ada21ab742c022d5430". Could very possibly be related to this!
+    -   Note: I added a temporary console.info when setAppReady is set to true, but I don't see it printing out! But it's surely happening. I wonder what that means.
 -   Android - status bar needs to be moved down
 -   Android - it seems to me the sample book doesn't always load?
 -   Drawer needs to be closed
