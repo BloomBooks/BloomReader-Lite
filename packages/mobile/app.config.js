@@ -8,7 +8,7 @@ const releaseChannel = process.env.RELEASE_CHANNEL?.toLowerCase();
 export default {
     name: getAppName(),
     slug: "bloom-reader-lite-mobile", // Used in Expo URLs or the project name in Expo Go, I think. I don't think it needs to vary based on release channel.
-    version: "1.0.0",
+    version: "0.1.0",
     owner: "bloombooks",
     orientation: "portrait",
     icon: "./assets/BloomIcon.png",
@@ -22,6 +22,7 @@ export default {
     ios: {
         supportsTablet: true,
         bundleIdentifier: getPackageIdentifier(),
+        buildNumber: "1", // typically a single integer (but as a string)
     },
     android: {
         package: getPackageIdentifier(),

@@ -114,6 +114,8 @@ Note: if you change the file structure in [mobile], hot reloading might not work
 
 ## Submitting to app stores
 
+Use the "Publish" workflow to publish to the app stores
+
 ### Google Play Store (Android)
 
 ### Apple App Store (iOS)
@@ -121,6 +123,8 @@ Note: if you change the file structure in [mobile], hot reloading might not work
 Much (but not all) of the app store information (such as the app's description) can be submitted via the store.config.json file. It's best if you keep everything up-to-date there.
 
 You can update app store metadata via `yarn npx eas-cli metadata:push`. Maybe you could do `yarn npx eas-cli metadata:pull` first and see if there's any changes that were manually made that should be saved in store.config.json first though.
+
+Note that every time you publish, the BUILD number needs to be increased. Note that the BUILD number is not the same as the VERSION number (the version number is what real users see in the app store)
 
 ## Other Topics
 
