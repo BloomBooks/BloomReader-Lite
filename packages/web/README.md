@@ -18,6 +18,10 @@ I recommend manually copying any mock books you need for development into ./mock
 
 The current thought is to make the design more or less consistent with the look of the original Android app (i.e., rely on Material UI). Since we're going to be on both mobile + desktop platforms, and this is a web-technology based app, and it will be hosting BloomLibrary as a substantial part of the app anyway, we're planning to rely on Material-ish designs rather than try to emulate native look and feel on mobile
 
+## Other Notes
+
+In implementing the functionality, it is helpful to look at bloompub-viewer-RN and BloomReader-RN, which often will have existing implementations that parallel what needs to go in here. The original BloomReader repo will sometimes be helpful too.
+
 ## Boilerplate info from Vite (React + TS + Vite) template
 
 ### React + TypeScript + Vite
